@@ -27,6 +27,8 @@ const generateDataArray = (length, generator) =>(length) ?
 
 const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 const getHours = (date) => dayjs(date).format('HH:mm');
 const getHumanizedDate = (date) => dayjs(date).format('MMM D');
 const getDate = (date) => dayjs(date).format('YYYY-MM-DD');
@@ -46,5 +48,6 @@ export {
   popRandomArrayItem,
   getDateTimeType,
   getDuration,
-  capitalizeWord
+  capitalizeWord,
+  isEscapeKey
 };
