@@ -26,7 +26,7 @@ const generateDateTo = () => {
   return timeBuffer.end;
 };
 
-const destinationID = generateData(destinations.length - 1, (index) => index );
+const destinationID = generateData(destinations?.length, (index) => index );
 
 const generatePoint = (index) => {
   const type = getRandomArrayItem(POINT_TYPES);
