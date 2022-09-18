@@ -1,9 +1,9 @@
-import EventBoardPresenter from './presenter/event-board-presenter.js';
-import EventsModel from './model/events-model.js';
+import PointBoardPresenter from './presenter/board-presenter.js';
+import PointsModel from './model/points-model.js';
 
 
-const eventBoardPresenter = new EventBoardPresenter();
-const eventsModel = new EventsModel();
+const pointBoardPresenter = new PointBoardPresenter();
+const pointsModel = new PointsModel();
 const siteMainElement = document.querySelector('.trip-events');
 
-eventBoardPresenter.init(siteMainElement, eventsModel);
+pointBoardPresenter.init(siteMainElement, pointsModel);

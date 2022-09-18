@@ -21,7 +21,7 @@ const popRandomArrayItem = (array) => {
   return array.pop();
 };
 
-const generateDataArray = (length, generator) =>(length) ?
+const generateData = (length, generator) =>(length) ?
   Array.from({length}, (_, index) => generator(index)) :
   null;
 
@@ -37,7 +37,7 @@ const getDateTimeType = (data) =>dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 
 export {
-  generateDataArray,
+  generateData,
   getDate,
   getHours,
   getHumanizedDate,

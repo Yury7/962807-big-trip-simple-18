@@ -2,7 +2,7 @@ import {
   offerPrise, OFFERS, OFFERS_BY_TYPE_MAX_AMOUNT, POINT_TYPES
 } from '../const.js';
 import {
-  generateDataArray,
+  generateData,
   getRandomArrayItem,
   getRandomInteger,
   popRandomArrayItem
@@ -18,9 +18,9 @@ const pointTypes = POINT_TYPES.slice();
 
 const generateOffersByType = () => ({
   type: popRandomArrayItem(pointTypes) ?? getRandomArrayItem(POINT_TYPES),
-  offers: generateDataArray(getRandomInteger(0, OFFERS_BY_TYPE_MAX_AMOUNT), generateOffer)
+  offers: generateData(getRandomInteger(0, OFFERS_BY_TYPE_MAX_AMOUNT), generateOffer)
 });
 
-const offers = generateDataArray(POINT_TYPES.length, generateOffersByType);
+const offers = generateData(POINT_TYPES.length, generateOffersByType);
 
 export {offers};
