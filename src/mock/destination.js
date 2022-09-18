@@ -24,5 +24,4 @@ const generateDestination = (index) => {
 };
 
 const destinations = generateData(POINTS_AMOUNT, generateDestination);
-
 export {destinations};

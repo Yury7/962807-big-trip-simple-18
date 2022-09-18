@@ -6,7 +6,11 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const getRandomArrayItem = (array) => array[getRandomInteger(0, array.length - 1)];
+const getRandomArrayItem = (array) => {
+  if (!array) {return null;}
+  if (array.length === 0) {return [];}
+  return array[getRandomInteger(0, array.length - 1)];
+};
 
 const getRandomArrayItems = (array, limit = array.length) => {
   const maxLength = (limit < array.length) ? limit : array.length;
@@ -15,6 +19,7 @@ const getRandomArrayItems = (array, limit = array.length) => {
 };
 
 const popRandomArrayItem = (array) => {
+  if (!array || array.length === 0) {return null;}
   const lastIndex = array.length - 1;
   const randomIndex = getRandomInteger(0, lastIndex);
   [array[lastIndex], array[randomIndex]] = [array[randomIndex], array[lastIndex]];
