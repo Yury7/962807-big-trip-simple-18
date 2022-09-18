@@ -48,7 +48,7 @@ const DESTINATIONS = [
   'Geneva'
 ];
 
-const eventPrice = {
+const pointPrice = {
   min: 100,
   max: 1000,
 };
@@ -78,7 +78,7 @@ export {
   DESCRIPTIONS_MAX_AMOUNT,
   DESCRIPTIONS,
   DESTINATIONS,
-  eventPrice,
+  pointPrice,
   MINUTES_DELTA,
   offerPrise,
   OFFERS_BY_TYPE_MAX_AMOUNT,
