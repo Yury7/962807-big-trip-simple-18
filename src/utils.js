@@ -27,7 +27,7 @@ const generateData = (length, generator) =>(length) ?
 
 const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const getHours = (date) => dayjs(date).format('HH:mm');
 const getHumanizedDate = (date) => dayjs(date).format('MMM D');
