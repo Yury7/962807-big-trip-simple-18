@@ -3,6 +3,7 @@ import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 import {render} from '../render.js';
 import {isEscapeKey} from '../utils.js';
 
@@ -11,6 +12,7 @@ export default class PointBoardPresenter {
   #pointsContainer = null;
   #pointsModel = null;
   #points = null;
+  #emptyListView = new EmptyListView();
   #pointListComponent = new PointListView();
   #filterContainer = document.querySelector('.trip-controls__filters');
 
@@ -64,12 +66,16 @@ export default class PointBoardPresenter {
   init = (pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
-    this.#points = [...this.#pointsModel.points];
     render(new FilterView(), this.#filterContainer);
+
+    if (!this.#pointsModel.points) {
+      render(this.#emptyListView, this.#pointsContainer);
+      return;
+    }
+    this.#points = [...this.#pointsModel.points];
     render(new SortView(), this.#pointsContainer);
     render(this.#pointListComponent, this.#pointsContainer);
-
-    for (let i = 1; i < this.#points.length - 1; i++){
+    for (let i = 0; i < this.#points.length; i++){
       this.#renderPoint(this.#points[i]);
     }
   };
