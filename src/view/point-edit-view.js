@@ -2,7 +2,7 @@ import {
   DESTINATIONS, POINT_TYPES
 } from '../const.js';
 import { destinations } from '../mock/destination.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {
   capitalizeWord, getInputTypeDate, getRandomInteger
 } from '../utils.js';
@@ -161,27 +161,15 @@ ${createDestination()}
 </li>`;
 };
 
-export default class PointEditView {
-  #element = null;
-  #event = null;
+export default class PointEditView extends AbstractView {
+  #point = null;
 
-  constructor(event) {
-    this.#event = event;
+  constructor(point) {
+    super();
+    this.#point = point;
   }
 
   get template() {
-    return createPointEditTemplate(this.#event);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return createPointEditTemplate(this.#point);
   }
 }

@@ -4,7 +4,7 @@ import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {render} from '../render.js';
+import {render} from '../framework/render.js';
 import {isEscapeKey} from '../utils.js';
 
 
