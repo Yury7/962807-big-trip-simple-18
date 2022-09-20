@@ -172,4 +172,27 @@ export default class PointEditView extends AbstractView {
   get template() {
     return createPointEditTemplate(this.#point);
   }
+
+  setCloseFormHandler = (callback) => {
+    this._callback.closeEditForm = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#closeEditFormHandler);
+  };
+
+  setSaveFormHandler = (callback) => {
+    this._callback.saveEditForm = callback;
+    this.element.addEventListener('submit', this.#saveEditFormHandler);
+  };
+
+  #closeEditFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeEditForm();
+  };
+
+  #saveEditFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.saveEditForm();
+  };
+
 }

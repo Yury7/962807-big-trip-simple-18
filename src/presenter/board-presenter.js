@@ -17,12 +17,11 @@ export default class PointBoardPresenter {
   #filterContainer = document.querySelector('.trip-controls__filters');
 
   #renderPoint = (point) => {
-
     const pointItemComponent = new PointItemView(point);
-
     const pointEditComponent = new PointEditView(point);
 
     render(pointItemComponent, this.#pointListComponent.element);
+
 
     const replaceFormToItem = () => {
       this.#pointListComponent.element.replaceChild(
@@ -46,22 +45,11 @@ export default class PointBoardPresenter {
       document.addEventListener('keydown', onEscKeyDown);
     };
 
-    pointItemComponent.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', replacePointToForm);
-
-
-    pointEditComponent.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToItem();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-
-    pointEditComponent.element
-      .querySelector('.event__rollup-btn')
-      .addEventListener('click', replaceFormToItem);
+    pointItemComponent.setEditHandler(replacePointToForm);
+    pointEditComponent.setCloseFormHandler(replaceFormToItem);
+    pointEditComponent.setSaveFormHandler(replaceFormToItem);
   };
+
 
   init = (pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
