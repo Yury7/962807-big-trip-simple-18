@@ -3,9 +3,8 @@ import {
 } from '../const.js';
 import { destinations } from '../mock/destination.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {
-  capitalizeWord, getInputTypeDate, getRandomInteger
-} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
+import {capitalizeWord, getInputTypeDate} from '../utils/point.js';
 
 const createPointEditTemplate = (point = {}) => {
 

@@ -5,7 +5,7 @@ import {
   generateData, getRandomArrayItem,
   getRandomArrayItems,
   getRandomInteger
-} from '../utils.js';
+} from '../utils/common.js';
 
 
 const generatePicture = () => ({

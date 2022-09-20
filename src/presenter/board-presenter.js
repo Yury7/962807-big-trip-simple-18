@@ -4,8 +4,8 @@ import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {render} from '../framework/render.js';
-import {isEscapeKey} from '../utils.js';
+import {render, replace} from '../framework/render.js';
+import {isEscapeKey} from '../utils/common.js';
 
 
 export default class PointBoardPresenter {
@@ -24,10 +24,7 @@ export default class PointBoardPresenter {
 
 
     const replaceFormToItem = () => {
-      this.#pointListComponent.element.replaceChild(
-        pointItemComponent.element,
-        pointEditComponent.element
-      );
+      replace(pointItemComponent, pointEditComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -37,11 +34,7 @@ export default class PointBoardPresenter {
     };
 
     const replacePointToForm = () => {
-      this.#pointListComponent.element.replaceChild(
-        pointEditComponent.element,
-        pointItemComponent.element
-      );
-
+      replace(pointEditComponent, pointItemComponent);
       document.addEventListener('keydown', onEscKeyDown);
     };
 

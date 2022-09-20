@@ -1,10 +1,11 @@
 import { destinations } from '../mock/destination.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import {getRandomInteger} from '../utils/common.js';
 import {
   getDate, getDateTimeType,
   getDuration, getHours,
-  getHumanizedDate, getRandomInteger
-} from '../utils.js';
+  getHumanizedDate
+} from '../utils/point.js';
 
 const createPointItemTemplate = (point) => {
   const {id, basePrice, dateFrom, dateTo, type, offers} = point;

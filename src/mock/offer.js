@@ -6,7 +6,7 @@ import {
   getRandomArrayItem,
   getRandomInteger,
   popRandomArrayItem
-} from '../utils.js';
+} from '../utils/common.js';
 
 const generateOffer = (index) => ({
   id: index,
