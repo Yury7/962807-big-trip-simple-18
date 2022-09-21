@@ -48,6 +48,12 @@ const DESTINATIONS = [
   'Geneva'
 ];
 
+const FilterType = {
+  EVERYTHING  : 'everything',
+  FUTURE : 'future',
+  PAST: 'past',
+};
+
 const pointPrice = {
   min: 100,
   max: 1000,
@@ -86,5 +92,6 @@ export {
   PICTURES_MAX_AMOUNT,
   POINT_TYPES,
   POINTS_AMOUNT,
-  timeBuffer
+  timeBuffer,
+  FilterType
 };

@@ -1,4 +1,3 @@
-import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
@@ -14,7 +13,6 @@ export default class PointBoardPresenter {
   #points = null;
   #emptyListView = new EmptyListView();
   #pointListComponent = new PointListView();
-  #filterContainer = document.querySelector('.trip-controls__filters');
 
   #renderPoint = (point) => {
     const pointItemComponent = new PointItemView(point);
@@ -47,7 +45,6 @@ export default class PointBoardPresenter {
   init = (pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
-    render(new FilterView(), this.#filterContainer);
 
     if (!this.#pointsModel.points) {
       render(this.#emptyListView, this.#pointsContainer);
