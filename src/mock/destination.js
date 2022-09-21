@@ -2,7 +2,7 @@ import {
   DESCRIPTIONS, DESCRIPTIONS_MAX_AMOUNT, DESTINATIONS, PICTURES_MAX_AMOUNT, POINTS_AMOUNT
 } from '../const.js';
 import {
-  generateDataArray, getRandomArrayItem,
+  generateData, getRandomArrayItem,
   getRandomArrayItems,
   getRandomInteger
 } from '../utils.js';
@@ -19,10 +19,9 @@ const generateDestination = (index) => {
     id: index,
     description: getRandomArrayItems(DESCRIPTIONS, DESCRIPTIONS_MAX_AMOUNT).join(' '),
     name: getRandomArrayItem(DESTINATIONS),
-    pictures: generateDataArray(picturesCount, generatePicture),
+    pictures: generateData(picturesCount, generatePicture),
   };
 };
 
-const destinations = generateDataArray(POINTS_AMOUNT, generateDestination);
-
+const destinations = generateData(POINTS_AMOUNT, generateDestination);
 export {destinations};

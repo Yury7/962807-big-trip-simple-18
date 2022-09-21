@@ -6,8 +6,8 @@ import {
   getHumanizedDate, getRandomInteger
 } from '../utils.js';
 
-const createEventItemTemplate = (event) => {
-  const {id, basePrice, dateFrom, dateTo, type, offers} = event;
+const createPointItemTemplate = (point) => {
+  const {id, basePrice, dateFrom, dateTo, type, offers} = point;
   const destination = destinations.find((item) => id === item.id).name;
   const createOffer = (offer) => `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
@@ -62,23 +62,26 @@ const createEventItemTemplate = (event) => {
 };
 
 export default class EventItemView {
-  constructor(event) {
-    this.event = event;
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createEventItemTemplate(this.event);
+  get template() {
+    return createPointItemTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

@@ -6,7 +6,11 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const getRandomArrayItem = (array) => array[getRandomInteger(0, array.length - 1)];
+const getRandomArrayItem = (array) => {
+  if (!array) {return null;}
+  if (array.length === 0) {return [];}
+  return array[getRandomInteger(0, array.length - 1)];
+};
 
 const getRandomArrayItems = (array, limit = array.length) => {
   const maxLength = (limit < array.length) ? limit : array.length;
@@ -15,17 +19,20 @@ const getRandomArrayItems = (array, limit = array.length) => {
 };
 
 const popRandomArrayItem = (array) => {
+  if (!array || array.length === 0) {return null;}
   const lastIndex = array.length - 1;
   const randomIndex = getRandomInteger(0, lastIndex);
   [array[lastIndex], array[randomIndex]] = [array[randomIndex], array[lastIndex]];
   return array.pop();
 };
 
-const generateDataArray = (length, generator) =>(length) ?
+const generateData = (length, generator) =>(length) ?
   Array.from({length}, (_, index) => generator(index)) :
   null;
 
 const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
+
+const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
 const getHours = (date) => dayjs(date).format('HH:mm');
 const getHumanizedDate = (date) => dayjs(date).format('MMM D');
@@ -35,7 +42,7 @@ const getDateTimeType = (data) =>dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 
 export {
-  generateDataArray,
+  generateData,
   getDate,
   getHours,
   getHumanizedDate,
@@ -46,5 +53,6 @@ export {
   popRandomArrayItem,
   getDateTimeType,
   getDuration,
-  capitalizeWord
+  capitalizeWord,
+  isEscapeKey
 };

@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import {
-  eventPrice, POINT_TYPES, timeBuffer
+  pointPrice, POINT_TYPES, timeBuffer
 } from '../const.js';
-import { generateDataArray, getRandomArrayItem, getRandomInteger, popRandomArrayItem } from '../utils.js';
+import { generateData, getRandomArrayItem, getRandomInteger, popRandomArrayItem } from '../utils.js';
 import { destinations } from './destination.js';
 import { offers } from './offer.js';
 
@@ -26,13 +26,13 @@ const generateDateTo = () => {
   return timeBuffer.end;
 };
 
-const destinationID = generateDataArray(destinations.length - 1, (index) => index );
+const destinationID = generateData(destinations?.length, (index) => index );
 
-const generateEvent = (index) => {
+const generatePoint = (index) => {
   const type = getRandomArrayItem(POINT_TYPES);
   return{
     id: index,
-    basePrice: getRandomInteger(eventPrice.min, eventPrice.max),
+    basePrice: getRandomInteger(pointPrice.min, pointPrice.max),
     dateFrom: generateDateFrom(),
     dateTo: generateDateTo(),
     destination: popRandomArrayItem(destinationID),
@@ -42,4 +42,4 @@ const generateEvent = (index) => {
 };
 
 
-export { generateEvent };
+export { generatePoint };

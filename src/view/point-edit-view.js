@@ -7,7 +7,7 @@ import {
   capitalizeWord, getInputTypeDate, getRandomInteger
 } from '../utils.js';
 
-const createEventEditTemplate = (event = {}) => {
+const createPointEditTemplate = (point = {}) => {
 
   const {
     id = '',
@@ -16,14 +16,14 @@ const createEventEditTemplate = (event = {}) => {
     dateTo = '',
     type = '',
     offers = '',
-  } = event;
+  } = point;
 
   const destination = destinations.find((item) => id === item.id)?.name ?? 'Geneva';
   const destinationItem = destinations.find((item) => id === item.id);
 
-  const createEventTypeList = () => {
+  const createPointTypeList = () => {
 
-    const createEventTypeItem = (typeItem, currentType) => `
+    const createPointTypeItem = (typeItem, currentType) => `
   <div class="event__type-item">
     <input id="event-type-${typeItem}-${id + 1}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${capitalizeWord(typeItem)}" ${typeItem === currentType ? 'checked' : ''}>
     <label class="event__type-label  event__type-label--${typeItem}" for="event-type-${typeItem}-${id + 1}">${capitalizeWord(typeItem)}</label>
@@ -31,12 +31,12 @@ const createEventEditTemplate = (event = {}) => {
 
     return POINT_TYPES
       .slice()
-      .map((item) => createEventTypeItem(item, type))
+      .map((item) => createPointTypeItem(item, type))
       .join(' ');
 
   };
 
-  const createEventDestinationsList = () => DESTINATIONS
+  const createPointDestinationsList = () => DESTINATIONS
     .slice()
     .map((item) => `<option value="${item}"></option>`)
     .join(' ');
@@ -116,7 +116,7 @@ ${createPictures()}
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${createEventTypeList()}
+            ${createPointTypeList()}
           </fieldset>
         </div>
       </div>
@@ -127,7 +127,7 @@ ${createPictures()}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
         <datalist id="destination-list-1">
-            ${createEventDestinationsList()}
+            ${createPointDestinationsList()}
         </datalist>
       </div>
 
@@ -148,7 +148,10 @@ ${createPictures()}
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>
     </header>
     <section class="event__details">
     ${createOffers()}
@@ -157,24 +160,28 @@ ${createDestination()}
   </form>
 </li>`;
 };
-export default class EventEditView {
+
+export default class PointEditView {
+  #element = null;
+  #event = null;
+
   constructor(event) {
-    this.event = event;
+    this.#event = event;
   }
 
-  getTemplate() {
-    return createEventEditTemplate(this.event);
+  get template() {
+    return createPointEditTemplate(this.#event);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
