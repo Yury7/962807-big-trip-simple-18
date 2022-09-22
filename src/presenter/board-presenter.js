@@ -29,7 +29,7 @@ export default class PointBoardPresenter {
   init = (pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
-    if (!this.#pointsModel.points) {this.#renderEmptyList();}
+    if (!this.#pointsModel.points) {return this.#renderEmptyList();}
     this.#points = [...this.#pointsModel.points];
     this.#renderSorting();
     this.#renderPointList();
