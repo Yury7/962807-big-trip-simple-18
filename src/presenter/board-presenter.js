@@ -1,10 +1,8 @@
-import SortView from '../view/sort-view.js';
-import PointListView from '../view/point-list-view.js';
-import PointEditView from '../view/point-edit-view.js';
-import PointItemView from '../view/point-item-view.js';
+import { render, RenderPosition } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {render, RenderPosition, replace} from '../framework/render.js';
-import {isEscapeKey} from '../utils/common.js';
+import PointListView from '../view/point-list-view.js';
+import SortView from '../view/sort-view.js';
+import PointPresenter from './point-presenter.js';
 
 
 export default class PointBoardPresenter {
@@ -20,29 +18,8 @@ export default class PointBoardPresenter {
   #renderEmptyList = () => render(this.#emptyListView, this.#pointsContainer, RenderPosition.AFTERBEGIN);
 
   #renderPoint = (point) => {
-    const pointItemComponent = new PointItemView(point);
-    const pointEditComponent = new PointEditView(point);
-
-    const replaceFormToItem = () => {
-      replace(pointItemComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (!isEscapeKey(evt)) {return;}
-      replaceFormToItem();
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointItemComponent);
-      document.addEventListener('keydown', onEscKeyDown);
-    };
-
-    render(pointItemComponent, this.#pointListComponent.element);
-
-    pointItemComponent.setEditHandler(replacePointToForm);
-    pointEditComponent.setCloseFormHandler(replaceFormToItem);
-    pointEditComponent.setSaveFormHandler(replaceFormToItem);
+    const pointPresenter = new PointPresenter(this.#pointListComponent.element);
+    pointPresenter.init(point);
   };
 
   #renderPoints = () => {
