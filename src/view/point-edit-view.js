@@ -15,10 +15,10 @@ const createPointEditTemplate = (point = {}) => {
     dateTo = '',
     type = '',
     offers = '',
+    destination = '',
   } = point;
-
-  const destination = destinations.find((item) => id === item.id)?.name ?? 'Geneva';
-  const destinationItem = destinations.find((item) => id === item.id);
+  const destinationName = destinations.find((item) => destination === item.id)?.name ?? 'Geneva';
+  const destinationItem = destinations.find((item) => destination === item.id);
 
   const createPointTypeList = () => {
 
@@ -124,7 +124,7 @@ ${createPictures()}
         <label class="event__label  event__type-output" for="event-destination-1">
           ${capitalizeWord(type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
         <datalist id="destination-list-1">
             ${createPointDestinationsList()}
         </datalist>

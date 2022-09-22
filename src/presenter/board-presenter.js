@@ -8,10 +8,11 @@ import PointPresenter from './point-presenter.js';
 export default class PointBoardPresenter {
   #pointsContainer = null;
   #pointsModel = null;
-  #points = null;
+  #points = [];
   #SortComponent = new SortView();
   #pointListComponent = new PointListView();
   #emptyListView = new EmptyListView();
+  #pointPresenter = new Map();
 
   #renderSorting = () => render(this.#SortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
   #renderPointList = () => render(this.#pointListComponent, this.#pointsContainer);
@@ -20,10 +21,16 @@ export default class PointBoardPresenter {
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#pointListComponent.element);
     pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
     this.#points.slice().forEach((point) => this.#renderPoint(point));
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
   init = (pointsContainer, pointsModel) => {
