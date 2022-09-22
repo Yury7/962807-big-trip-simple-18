@@ -147,10 +147,12 @@ ${createPictures()}
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__reset-btn" type="reset">${(point) ? 'Delete' : 'Cancel'}</button>
+      ${(point) ?
+    `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
-    </button>
+      </button>`
+    : ''}
     </header>
     <section class="event__details">
     ${createOffers()}
@@ -184,6 +186,16 @@ export default class PointEditView extends AbstractView {
     this.element.addEventListener('submit', this.#saveEditFormHandler);
   };
 
+  setResetFormHandler = (callback) => {
+    this._callback.resetEditForm = callback;
+    this.element.addEventListener('reset', this.#resetEditFormHandler);
+  };
+
+  setDeleteItemHandler = (callback) => {
+    this._callback.deleteItem = callback;
+    this.element.addEventListener('reset', this.#deleteItemHandler);
+  };
+
   #closeEditFormHandler = (evt) => {
     evt.preventDefault();
     this._callback.closeEditForm();
@@ -191,7 +203,18 @@ export default class PointEditView extends AbstractView {
 
   #saveEditFormHandler = (evt) => {
     evt.preventDefault();
-    this._callback.saveEditForm();
+    this._callback.saveEditForm(this.#point);
   };
+
+  #resetEditFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.resetEditForm();
+  };
+
+  #deleteItemHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteItem();
+  };
+
 
 }
