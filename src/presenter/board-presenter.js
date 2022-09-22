@@ -3,7 +3,7 @@ import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import {render, replace} from '../framework/render.js';
+import {render, RenderPosition, replace} from '../framework/render.js';
 import {isEscapeKey} from '../utils/common.js';
 
 
@@ -11,15 +11,17 @@ export default class PointBoardPresenter {
   #pointsContainer = null;
   #pointsModel = null;
   #points = null;
-  #emptyListView = new EmptyListView();
+  #SortComponent = new SortView();
   #pointListComponent = new PointListView();
+  #emptyListView = new EmptyListView();
+
+  #renderSorting = () => render(this.#SortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
+  #renderPointList = () => render(this.#pointListComponent, this.#pointsContainer);
+  #renderEmptyList = () => render(this.#emptyListView, this.#pointsContainer, RenderPosition.AFTERBEGIN);
 
   #renderPoint = (point) => {
     const pointItemComponent = new PointItemView(point);
     const pointEditComponent = new PointEditView(point);
-
-    render(pointItemComponent, this.#pointListComponent.element);
-
 
     const replaceFormToItem = () => {
       replace(pointItemComponent, pointEditComponent);
@@ -36,25 +38,24 @@ export default class PointBoardPresenter {
       document.addEventListener('keydown', onEscKeyDown);
     };
 
+    render(pointItemComponent, this.#pointListComponent.element);
+
     pointItemComponent.setEditHandler(replacePointToForm);
     pointEditComponent.setCloseFormHandler(replaceFormToItem);
     pointEditComponent.setSaveFormHandler(replaceFormToItem);
   };
 
+  #renderPoints = () => {
+    this.#points.slice().forEach((point) => this.#renderPoint(point));
+  };
 
   init = (pointsContainer, pointsModel) => {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
-
-    if (!this.#pointsModel.points) {
-      render(this.#emptyListView, this.#pointsContainer);
-      return;
-    }
+    if (!this.#pointsModel.points) {this.#renderEmptyList();}
     this.#points = [...this.#pointsModel.points];
-    render(new SortView(), this.#pointsContainer);
-    render(this.#pointListComponent, this.#pointsContainer);
-    for (let i = 0; i < this.#points.length; i++){
-      this.#renderPoint(this.#points[i]);
-    }
+    this.#renderSorting();
+    this.#renderPointList();
+    this.#renderPoints();
   };
 }
