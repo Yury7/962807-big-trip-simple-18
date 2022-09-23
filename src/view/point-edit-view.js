@@ -2,10 +2,9 @@ import {
   DESTINATIONS, POINT_TYPES
 } from '../const.js';
 import { destinations } from '../mock/destination.js';
-import { createElement } from '../render.js';
-import {
-  capitalizeWord, getInputTypeDate, getRandomInteger
-} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {getRandomInteger} from '../utils/common.js';
+import {capitalizeWord, getInputTypeDate} from '../utils/point.js';
 
 const createPointEditTemplate = (point = {}) => {
 
@@ -161,27 +160,38 @@ ${createDestination()}
 </li>`;
 };
 
-export default class PointEditView {
-  #element = null;
-  #event = null;
+export default class PointEditView extends AbstractView {
+  #point = null;
 
-  constructor(event) {
-    this.#event = event;
+  constructor(point) {
+    super();
+    this.#point = point;
   }
 
   get template() {
-    return createPointEditTemplate(this.#event);
+    return createPointEditTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setCloseFormHandler = (callback) => {
+    this._callback.closeEditForm = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#closeEditFormHandler);
+  };
 
-    return this.#element;
-  }
+  setSaveFormHandler = (callback) => {
+    this._callback.saveEditForm = callback;
+    this.element.addEventListener('submit', this.#saveEditFormHandler);
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  #closeEditFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.closeEditForm();
+  };
+
+  #saveEditFormHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.saveEditForm();
+  };
+
 }

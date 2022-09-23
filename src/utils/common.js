@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -30,29 +28,13 @@ const generateData = (length, generator) =>(length) ?
   Array.from({length}, (_, index) => generator(index)) :
   null;
 
-const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
-
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
-
-const getHours = (date) => dayjs(date).format('HH:mm');
-const getHumanizedDate = (date) => dayjs(date).format('MMM D');
-const getDate = (date) => dayjs(date).format('YYYY-MM-DD');
-const getInputTypeDate = (date) => dayjs(date).format('DD/MM/YY HH:MM');
-const getDateTimeType = (data) =>dayjs(data).format('YYYY-MM-DDTHH:mm');
-const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 
 export {
   generateData,
-  getDate,
-  getHours,
-  getHumanizedDate,
-  getInputTypeDate,
   getRandomArrayItem,
   getRandomArrayItems,
   getRandomInteger,
   popRandomArrayItem,
-  getDateTimeType,
-  getDuration,
-  capitalizeWord,
   isEscapeKey
 };

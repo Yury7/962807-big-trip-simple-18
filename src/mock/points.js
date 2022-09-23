@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {
   pointPrice, POINT_TYPES, timeBuffer
 } from '../const.js';
-import { generateData, getRandomArrayItem, getRandomInteger, popRandomArrayItem } from '../utils.js';
+import { generateData, getRandomArrayItem, getRandomInteger, popRandomArrayItem } from '../utils/common.js';
 import { destinations } from './destination.js';
 import { offers } from './offer.js';
 

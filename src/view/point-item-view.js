@@ -1,10 +1,11 @@
 import { destinations } from '../mock/destination.js';
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {getRandomInteger} from '../utils/common.js';
 import {
   getDate, getDateTimeType,
   getDuration, getHours,
-  getHumanizedDate, getRandomInteger
-} from '../utils.js';
+  getHumanizedDate
+} from '../utils/point.js';
 
 const createPointItemTemplate = (point) => {
   const {id, basePrice, dateFrom, dateTo, type, offers} = point;
@@ -61,11 +62,11 @@ const createPointItemTemplate = (point) => {
             </li>`;
 };
 
-export default class EventItemView {
-  #element = null;
+export default class EventItemView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -73,15 +74,15 @@ export default class EventItemView {
     return createPointItemTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setEditHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element
+      .querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
