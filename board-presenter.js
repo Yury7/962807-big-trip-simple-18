@@ -39,6 +39,12 @@ export default class PointBoardPresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleSortTypeChange = (sortType) => {
+    // - Сортируем задачи
+    // - Очищаем список
+    // - Рендерим список заново
+  };
+
   #handlePointRemove = (removable) => {
     this.#points = removeItem(this.#points, removable);
     this.#pointPresenter.get(removable.id).destroy(removable);

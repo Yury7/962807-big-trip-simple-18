@@ -54,6 +54,14 @@ const FilterType = {
   PAST: 'past',
 };
 
+const SortType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRISE: 'prise',
+  OFFERS: 'offers',
+};
+
 const pointPrice = {
   min: 100,
   max: 1000,
@@ -93,5 +101,6 @@ export {
   POINT_TYPES,
   POINTS_AMOUNT,
   timeBuffer,
-  FilterType
+  FilterType,
+  SortType
 };

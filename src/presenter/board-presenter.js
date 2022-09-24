@@ -4,6 +4,8 @@ import PointListView from '../view/point-list-view.js';
 import SortView from '../view/sort-view.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem, removeItem } from '../utils/common.js';
+import { sortByDay, sortByPrice } from '../utils/point.js';
+import { SortType } from '../const.js';
 
 
 export default class PointBoardPresenter {
@@ -15,7 +17,14 @@ export default class PointBoardPresenter {
   #emptyListView = new EmptyListView();
   #pointPresenter = new Map();
 
-  #renderSorting = () => render(this.#sortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
+  #currentSortType = SortType.DAY;
+  #sourcedBoardPoints = [];
+
+  #renderSorting = () => {
+    render(this.#sortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
+    this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+  };
+
   #renderPointList = () => render(this.#pointListComponent, this.#pointsContainer);
   #renderEmptyList = () => render(this.#emptyListView, this.#pointsContainer, RenderPosition.AFTERBEGIN);
 
@@ -36,6 +45,7 @@ export default class PointBoardPresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#points = updateItem(this.#points, updatedPoint);
+    this.#sourcedBoardPoints = updateItem(this.#sourcedBoardPoints, updatedPoint);
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
@@ -44,8 +54,32 @@ export default class PointBoardPresenter {
     this.#pointPresenter.get(removablePoint.id).destroy(removablePoint);
   };
 
+  #sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.DAY:
+        this.#points.sort(sortByDay);
+        break;
+      case SortType.PRISE:
+        this.#points.sort(sortByPrice);
+        break;
+      default:
+        this.#points.sort(sortByDay);
+        break;
+    }
+    this.#currentSortType = sortType;
+  };
+
   #handleModeChange = () => {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+    this.#sortPoints(sortType);
+    this.#clearPointList();
+    this.#renderPoints();
   };
 
   init = (pointsContainer, pointsModel) => {
@@ -53,6 +87,7 @@ export default class PointBoardPresenter {
     this.#pointsModel = pointsModel;
     if (!this.#pointsModel.points) {return this.#renderEmptyList();}
     this.#points = [...this.#pointsModel.points];
+    this.#sourcedBoardPoints = [...this.#pointsModel.points];
     this.#renderSorting();
     this.#renderPointList();
     this.#renderPoints();
