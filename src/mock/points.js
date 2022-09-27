@@ -5,7 +5,7 @@ import {
 } from '../const.js';
 import { generateData, getRandomArrayItem, getRandomInteger, popRandomArrayItem } from '../utils/common.js';
 import { destinations } from './destination.js';
-import { offers } from './offer.js';
+import { offersByType } from './offer.js';
 
 const generateDateFrom = () => {
   if (!timeBuffer.start) {
@@ -29,6 +29,13 @@ const generateDateTo = () => {
 
 const destinationID = generateData(destinations?.length, (index) => index );
 
+const getRandomOffersIds = (type) => {
+  const offersByTypeCount = offersByType.find((offer) => offer.type === type).offers?.length;
+  if (!offersByTypeCount) {return [];}
+  const offersIds = Array.from({length: offersByTypeCount}, (i, k) => k);
+  return Array.from({length: getRandomInteger(0, offersByTypeCount)}, () => popRandomArrayItem(offersIds));
+};
+
 const generatePoint = () => {
   const type = getRandomArrayItem(POINT_TYPES);
   return{
@@ -38,7 +45,7 @@ const generatePoint = () => {
     dateTo: generateDateTo(),
     destination: popRandomArrayItem(destinationID),
     type,
-    offers: offers.find((offer) => offer.type === type).offers,
+    offers: getRandomOffersIds(type),
   };
 };
 

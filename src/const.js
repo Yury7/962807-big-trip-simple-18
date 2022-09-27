@@ -82,7 +82,7 @@ const timeBuffer = {
   maxDuration: 320
 };
 
-const OFFERS_BY_TYPE_MAX_AMOUNT = 2;
+const OFFERS_BY_TYPE_MAX_AMOUNT = 5;
 const POINTS_AMOUNT = 10;
 const MINUTES_DELTA = 1440;
 const PICTURES_MAX_AMOUNT = 4;

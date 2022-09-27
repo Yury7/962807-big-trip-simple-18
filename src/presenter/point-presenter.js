@@ -30,6 +30,7 @@ export default class PointPresenter {
 
   #onEscKeyDown = (evt) => {
     if (!isEscapeKey(evt)) {return;}
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
@@ -50,6 +51,11 @@ export default class PointPresenter {
     this.destroy();
   };
 
+  #handleFormClose = () => {
+    this.#pointEditComponent.reset(this.#point);
+    this.#replaceFormToPoint();
+  };
+
   init = (point) => {
     this.#point = point;
     const prevPointComponent = this.#pointItemComponent;
@@ -59,8 +65,8 @@ export default class PointPresenter {
     this.#pointEditComponent = new PointEditView(point);
 
     this.#pointItemComponent.setEditHandler(this.#replacePointToForm);
-    this.#pointEditComponent.setCloseFormHandler(this.#replaceFormToPoint);
-    this.#pointEditComponent.setSaveFormHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setCloseFormHandler(this.#handleFormClose);
+    this.#pointEditComponent.setSubmitFormHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteItemHandler(this.#handleFormDelete);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -88,6 +94,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };

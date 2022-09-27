@@ -1,5 +1,6 @@
-import { destinations } from '../mock/destination.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { destinations } from '../mock/destination.js';
+import { offersByType } from '../mock/offer.js';
 import { createElement } from '../framework/render.js';
 import {
   getDate, getDateTimeType,
@@ -9,15 +10,24 @@ import {
 
 const createPointItemTemplate = (point) => {
   const {basePrice, dateFrom, dateTo, type, offers, destination} = point;
-  const destinationName = destinations.find((item) => destination === item.id).name;
+
+  const destinationName = (destination) ?
+    destinations.find((item) => item.id === destination)?.name ?? '' : '';
+
+  const getCheckedOffers = () => {
+    if (offers.length === 0) {return '';}
+    const offersByCurrentType = offersByType.find((item) => type === item.type).offers;
+    return offers.slice().map((item) => offersByCurrentType[item]);
+  };
+
   const createOffer = (offer) => `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
     </li>`;
 
-  const createOfferList = (offerList) => (offerList?.length) ?
-    offerList.slice().map((offer) => createOffer(offer)).join(' ') :
+  const createOfferList = (checkedOffers = getCheckedOffers()) => (checkedOffers) ?
+    checkedOffers.slice().map((offer) => createOffer(offer)).join(' ') :
     `<li class="event__offer">
   <span class="event__offer-title">No additional offers</span>
   </li>`;
@@ -42,7 +52,7 @@ const createPointItemTemplate = (point) => {
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">
-                  ${createOfferList(offers)}
+                  ${createOfferList()}
                 </ul>
                 <button class="event__favorite-btn" type="button">
                   <span class="visually-hidden">Add to favorite</span>
