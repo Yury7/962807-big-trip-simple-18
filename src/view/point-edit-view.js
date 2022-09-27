@@ -5,6 +5,8 @@ import { destinations } from '../mock/destination.js';
 import { offersByType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {capitalizeWord, toKebabCase, getInputTypeDate} from '../utils/point.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   id: '',
@@ -151,7 +153,7 @@ ${createPictures()}
 };
 
 export default class PointEditView extends AbstractStatefulView {
-
+  #datepicker = null;
   constructor(point = BLANK_POINT) {
     super();
     this._state = this.#parsePointToState(point);
@@ -167,6 +169,54 @@ export default class PointEditView extends AbstractStatefulView {
       this.#parsePointToState(point)
     );
   };
+
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
+  };
+
+  #dateFromInputHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToInputHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate
+    });
+  };
+
+  #setDatepickerFrom = () => {
+    this.#datepicker = flatpickr (
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromInputHandler
+      }
+    );
+  };
+
+  #setDatepickerTo = () => {
+    this.#datepicker = flatpickr (
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        minDate: this._state.dateFrom,
+        enableTime: true,
+        defaultDate: this._state.dateTo,
+        onClose: this.#dateToInputHandler
+      }
+    );
+  };
+
 
   #getDestinationItem = (destination) => {
     if (destination === '' ||
@@ -259,18 +309,6 @@ export default class PointEditView extends AbstractStatefulView {
     });
   };
 
-  #dateFromInputHandler = (evt) => {
-    this._setState({
-      dateFrom: evt.target.value
-    });
-  };
-
-  #dateToInputHandler = (evt) => {
-    this._setState({
-      dateTo: evt.target.value
-    });
-  };
-
   #priceInputHandler = (evt) => {
     this._setState({
       basePrice: evt.target.value
@@ -293,6 +331,8 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToInputHandler);
     this.element.querySelector('#event-price-1').addEventListener('input', this.#priceInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersToggleHandler);
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   };
 
 
