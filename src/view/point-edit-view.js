@@ -2,30 +2,33 @@ import {
   DESTINATIONS, POINT_TYPES
 } from '../const.js';
 import { destinations } from '../mock/destination.js';
-import AbstractView from '../framework/view/abstract-view.js';
-import {getRandomInteger} from '../utils/common.js';
-import {capitalizeWord, getInputTypeDate} from '../utils/point.js';
+import { offersByType } from '../mock/offer.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import {capitalizeWord, toKebabCase, getInputTypeDate} from '../utils/point.js';
 
-const createPointEditTemplate = (point = {}) => {
+const BLANK_POINT = {
+  id: '',
+  basePrice: '',
+  dateFrom: '',
+  dateTo: '',
+  destination: '',
+  destinationItem: '',
+  type: '',
+  offers: [],
+  offerItems: [],
+};
 
-  const {
-    id = '',
-    basePrice = '',
-    dateFrom = '',
-    dateTo = '',
-    type = '',
-    offers = '',
-    destination = '',
-  } = point;
-  const destinationName = destinations.find((item) => destination === item.id)?.name ?? 'Geneva';
-  const destinationItem = destinations.find((item) => destination === item.id);
+
+const createPointEditTemplate = (data) => {
+
+  const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems} = data;
 
   const createPointTypeList = () => {
 
     const createPointTypeItem = (typeItem, currentType) => `
   <div class="event__type-item">
-    <input id="event-type-${typeItem}-${id + 1}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${capitalizeWord(typeItem)}" ${typeItem === currentType ? 'checked' : ''}>
-    <label class="event__type-label  event__type-label--${typeItem}" for="event-type-${typeItem}-${id + 1}">${capitalizeWord(typeItem)}</label>
+    <input id="event-type-${typeItem}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${capitalizeWord(typeItem)}" ${typeItem === currentType ? 'checked' : ''}>
+    <label class="event__type-label  event__type-label--${typeItem}" for="event-type-${typeItem}-${id}">${capitalizeWord(typeItem)}</label>
   </div>`;
 
     return POINT_TYPES
@@ -41,39 +44,24 @@ const createPointEditTemplate = (point = {}) => {
     .join(' ');
 
   const createOffers = () => {
-    if (!offers) {return '';}
-
-    const createOffer = (offer) => `
-  <div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id + 1}" type="checkbox" name="event-offer-luggage" ${getRandomInteger(0, 1) ? 'checked' : ''}>
-  <label class="event__offer-label" for="event-offer-luggage-${offer.id + 1}">
-    <span class="event__offer-title">${offer.title}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.prise}</span>
-  </label>
-</div>
-  `;
-
-
-    return `
-<section class="event__section  event__section--offers">
+    if (!offerItems.length) {return '';}
+    const createOffer = (offer) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${toKebabCase(offer.title)}-${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" data-offer-id="${offer.id}" ${offers.includes(offer.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${toKebabCase(offer.title)}-${offer.id}">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`;
+    return `<section class="event__section  event__section--offers">
 <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
 <div class="event__available-offers">
-  <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-    <label class="event__offer-label" for="event-offer-luggage-1">
-      <span class="event__offer-title">Add luggage</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">30</span>
-    </label>
-  </div>
 
-  ${offers.slice().map((offer) => createOffer(offer)).join(' ')}
+  ${offerItems.slice().map((offer) => createOffer(offer)).join(' ')}
+
 </div>
 </section>
-`;
-  };
+`;};
 
 
   const createDestination = () => {
@@ -122,9 +110,9 @@ ${createPictures()}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${capitalizeWord(type)}
+          ${type ? capitalizeWord(type) : ''}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem ? destinationItem.name : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
             ${createPointDestinationsList()}
         </datalist>
@@ -147,8 +135,8 @@ ${createPictures()}
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${(point) ? 'Delete' : 'Cancel'}</button>
-      ${(point) ?
+      <button class="event__reset-btn" type="reset">${(data.id) ? 'Delete' : 'Cancel'}</button>
+      ${(data.id) ?
     `<button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
       </button>`
@@ -156,23 +144,59 @@ ${createPictures()}
     </header>
     <section class="event__details">
     ${createOffers()}
-${createDestination()}
+    ${createDestination()}
     </section>
   </form>
 </li>`;
 };
 
-export default class PointEditView extends AbstractView {
-  #point = null;
+export default class PointEditView extends AbstractStatefulView {
 
-  constructor(point) {
+  constructor(point = BLANK_POINT) {
     super();
-    this.#point = point;
+    this._state = this.#parsePointToState(point);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createPointEditTemplate(this.#point);
+    return createPointEditTemplate(this._state);
   }
+
+  reset = (point) => {
+    this.updateElement(
+      this.#parsePointToState(point)
+    );
+  };
+
+  #getDestinationItem = (destination) => {
+    if (destination === '' ||
+    destination === null) {return '';}
+    return destinations.find((item) => item.id === destination);
+  };
+
+  #getOfferItems = (type) => {
+    if (!type) {return [];}
+    return offersByType.find((item) => item.type === type)?.offers ?? [];
+  };
+
+  #parsePointToState = (point) => ({...point,
+    destinationItem: this.#getDestinationItem(point.destination),
+    offerItems: this.#getOfferItems(point.type),
+  });
+
+  #parseStateToPoint = (state) => {
+    const point = {...state};
+    delete point.destinationItem;
+    delete point.offerItems;
+    return point;
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setSubmitFormHandler(this._callback.submitEditForm);
+    this.setCloseFormHandler(this._callback.closeEditForm);
+    this.setDeleteItemHandler(this._callback.deleteItem);
+  };
 
   setCloseFormHandler = (callback) => {
     this._callback.closeEditForm = callback;
@@ -181,9 +205,9 @@ export default class PointEditView extends AbstractView {
       .addEventListener('click', this.#closeEditFormHandler);
   };
 
-  setSaveFormHandler = (callback) => {
-    this._callback.saveEditForm = callback;
-    this.element.addEventListener('submit', this.#saveEditFormHandler);
+  setSubmitFormHandler = (callback) => {
+    this._callback.submitEditForm = callback;
+    this.element.addEventListener('submit', this.#submitEditFormHandler);
   };
 
   setResetFormHandler = (callback) => {
@@ -201,9 +225,9 @@ export default class PointEditView extends AbstractView {
     this._callback.closeEditForm();
   };
 
-  #saveEditFormHandler = (evt) => {
+  #submitEditFormHandler = (evt) => {
     evt.preventDefault();
-    this._callback.saveEditForm(this.#point);
+    this._callback.submitEditForm(this.#parseStateToPoint(this._state));
   };
 
   #resetEditFormHandler = (evt) => {
@@ -214,6 +238,61 @@ export default class PointEditView extends AbstractView {
   #deleteItemHandler = (evt) => {
     evt.preventDefault();
     this._callback.deleteItem();
+  };
+
+  #typeToggleHandler = (evt) => {
+    const currentType = evt.target.value.toLowerCase();
+    this.updateElement({
+      type: currentType,
+      offers: [],
+      offerItems: this.#getOfferItems(currentType)
+
+    });
+  };
+
+  #destinationInputHandler = (evt) => {
+    const currentDestination = destinations.find((destination) => destination.name === evt.target.value);
+
+    this.updateElement({
+      destination: (currentDestination) ? currentDestination.id : '',
+      destinationItem: (currentDestination) ? this.#getDestinationItem(currentDestination.id) : ''
+    });
+  };
+
+  #dateFromInputHandler = (evt) => {
+    this._setState({
+      dateFrom: evt.target.value
+    });
+  };
+
+  #dateToInputHandler = (evt) => {
+    this._setState({
+      dateTo: evt.target.value
+    });
+  };
+
+  #priceInputHandler = (evt) => {
+    this._setState({
+      basePrice: evt.target.value
+    });
+  };
+
+  #offersToggleHandler = () => {
+    const checkedOffers = this.element.querySelectorAll('.event__offer-checkbox:checked');
+    const checkedOfferIds = [];
+    checkedOffers.forEach((checkedOffer) => checkedOfferIds.push(+checkedOffer.dataset.offerId));
+    this._setState({
+      offers: checkedOfferIds
+    });
+  };
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromInputHandler);
+    this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToInputHandler);
+    this.element.querySelector('#event-price-1').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersToggleHandler);
   };
 
 

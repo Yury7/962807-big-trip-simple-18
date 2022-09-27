@@ -9,6 +9,11 @@ const getDateTimeType = (data) =>dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 
 
+const toKebabCase = (string) => string
+  .replace(/([a-z])([A-Z])/g, '$1-$2')
+  .replace(/[\s_]+/g, '-')
+  .toLowerCase();
+
 const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'D');
 
 const getWeightForNullDate = (dateA, dateB) => {
@@ -55,5 +60,6 @@ export {
   isPointVisited,
   getWeightForNullDate,
   sortByDay,
-  sortByPrice
+  sortByPrice,
+  toKebabCase
 };

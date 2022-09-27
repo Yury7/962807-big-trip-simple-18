@@ -21,6 +21,5 @@ const generateOffersByType = () => ({
   offers: generateData(getRandomInteger(0, OFFERS_BY_TYPE_MAX_AMOUNT), generateOffer)
 });
 
-const offers = generateData(POINT_TYPES.length, generateOffersByType);
-
-export {offers};
+const offersByType = generateData(POINT_TYPES.length, generateOffersByType);
+export {offersByType};
