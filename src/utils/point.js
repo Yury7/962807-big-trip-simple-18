@@ -8,6 +8,9 @@ const getInputTypeDate = (date) => dayjs(date).format('DD/MM/YY HH:MM');
 const getDateTimeType = (data) =>dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 
+
+const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'D');
+
 export {
   getDate,
   getHours,
@@ -16,4 +19,5 @@ export {
   getDateTimeType,
   getDuration,
   capitalizeWord,
+  isPointVisited,
 };

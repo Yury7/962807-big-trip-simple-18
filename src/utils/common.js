@@ -30,11 +30,40 @@ const generateData = (length, generator) =>(length) ?
 
 const isEscapeKey = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+const removeItem = (items, removable) => {
+  const index = items.findIndex((item) => item.id === removable.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    ...items.slice(index + 1),
+  ];
+};
+
 export {
   generateData,
   getRandomArrayItem,
   getRandomArrayItems,
   getRandomInteger,
   popRandomArrayItem,
-  isEscapeKey
+  isEscapeKey,
+  updateItem,
+  removeItem,
 };

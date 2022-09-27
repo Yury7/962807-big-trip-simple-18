@@ -10,23 +10,23 @@ export default class PointBoardPresenter {
   #pointsContainer = null;
   #pointsModel = null;
   #points = [];
-  #sortComponent = new SortView();
+  #SortComponent = new SortView();
   #pointListComponent = new PointListView();
   #emptyListView = new EmptyListView();
   #pointPresenter = new Map();
 
-  #renderSorting = () => render(this.#sortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
+  #renderSorting = () => render(this.#SortComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
   #renderPointList = () => render(this.#pointListComponent, this.#pointsContainer);
   #renderEmptyList = () => render(this.#emptyListView, this.#pointsContainer, RenderPosition.AFTERBEGIN);
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handlePointChange, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#pointListComponent.element);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
-    this.#points.forEach((point) => this.#renderPoint(point));
+    this.#points.slice().forEach((point) => this.#renderPoint(point));
   };
 
   #clearPointList = () => {
@@ -39,13 +39,9 @@ export default class PointBoardPresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #handlePointRemove = (removablePoint) => {
-    this.#points = removeItem(this.#points, removablePoint);
-    this.#pointPresenter.get(removablePoint.id).destroy(removablePoint);
-  };
-
-  #handleModeChange = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  #handlePointRemove = (removable) => {
+    this.#points = removeItem(this.#points, removable);
+    this.#pointPresenter.get(removable.id).destroy(removable);
   };
 
   init = (pointsContainer, pointsModel) => {
@@ -56,6 +52,5 @@ export default class PointBoardPresenter {
     this.#renderSorting();
     this.#renderPointList();
     this.#renderPoints();
-
   };
 }

@@ -1,6 +1,6 @@
 import { destinations } from '../mock/destination.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {getRandomInteger} from '../utils/common.js';
+import { createElement } from '../framework/render.js';
 import {
   getDate, getDateTimeType,
   getDuration, getHours,
@@ -8,8 +8,8 @@ import {
 } from '../utils/point.js';
 
 const createPointItemTemplate = (point) => {
-  const {id, basePrice, dateFrom, dateTo, type, offers} = point;
-  const destination = destinations.find((item) => id === item.id).name;
+  const {basePrice, dateFrom, dateTo, type, offers, destination} = point;
+  const destinationName = destinations.find((item) => destination === item.id).name;
   const createOffer = (offer) => `<li class="event__offer">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -22,18 +22,13 @@ const createPointItemTemplate = (point) => {
   <span class="event__offer-title">No additional offers</span>
   </li>`;
 
-  const favoriteButtonActive = getRandomInteger(0, 1) ?
-    'event__favorite-btn--active' :
-    '';
-
-
   return `<li class="trip-events__item">
               <div class="event">
                 <time class="event__date" datetime="${getDate(dateTo)}">${getHumanizedDate(dateTo)}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${type} ${destination}</h3>
+                <h3 class="event__title">${type} ${destinationName}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${getDateTimeType(dateFrom)}">${getHours(dateFrom)}</time>
@@ -49,7 +44,7 @@ const createPointItemTemplate = (point) => {
                 <ul class="event__selected-offers">
                   ${createOfferList(offers)}
                 </ul>
-                <button class="event__favorite-btn ${favoriteButtonActive}" type="button">
+                <button class="event__favorite-btn" type="button">
                   <span class="visually-hidden">Add to favorite</span>
                   <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
                     <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
@@ -64,6 +59,7 @@ const createPointItemTemplate = (point) => {
 
 export default class EventItemView extends AbstractView {
   #point = null;
+  #element = null;
 
   constructor(point) {
     super();
@@ -74,6 +70,23 @@ export default class EventItemView extends AbstractView {
     return createPointItemTemplate(this.#point);
   }
 
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+
+      this.#element
+        .querySelector('.event__favorite-btn')
+        .addEventListener('click', this.#toggleFavoriteButtonClick);
+    }
+
+    return this.#element;
+  }
+
+  #toggleFavoriteButtonClick = (evt) => {
+    evt.preventDefault();
+    this.#element.querySelector('.event__favorite-btn').classList.toggle('event__favorite-btn--active');
+  };
+
   setEditHandler = (callback) => {
     this._callback.editClick = callback;
     this.element
@@ -81,8 +94,18 @@ export default class EventItemView extends AbstractView {
       .addEventListener('click', this.#editClickHandler);
   };
 
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  };
+
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   };
 }
