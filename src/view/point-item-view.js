@@ -1,14 +1,13 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { destinations } from '../mock/destination.js';
-import { offersByType } from '../mock/offer.js';
 import { createElement } from '../framework/render.js';
 import {
   getDate, getDateTimeType,
   getDuration, getHours,
-  getHumanizedDate
+  getHumanizedDate,
 } from '../utils/point.js';
+import he from 'he';
 
-const createPointItemTemplate = (point) => {
+const createPointItemTemplate = (point, destinations, offersByType) => {
   const {basePrice, dateFrom, dateTo, type, offers, destination} = point;
 
   const destinationName = (destination) ?
@@ -34,11 +33,11 @@ const createPointItemTemplate = (point) => {
 
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="${getDate(dateTo)}">${getHumanizedDate(dateTo)}</time>
+                <time class="event__date" datetime="${getDate(dateFrom)}">${getHumanizedDate(dateFrom)}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${type} ${destinationName}</h3>
+                <h3 class="event__title">${he.encode(type)} ${he.encode(destinationName)}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${getDateTimeType(dateFrom)}">${getHours(dateFrom)}</time>
@@ -67,17 +66,22 @@ const createPointItemTemplate = (point) => {
             </li>`;
 };
 
-export default class EventItemView extends AbstractView {
+export default class PointItemView extends AbstractView {
   #point = null;
+  #destinations = null;
+  #offersByType = null;
   #element = null;
 
-  constructor(point) {
+
+  constructor(pointsModel, point) {
     super();
     this.#point = point;
+    this.#destinations = pointsModel.destinations;
+    this.#offersByType = pointsModel.offersByType;
   }
 
   get template() {
-    return createPointItemTemplate(this.#point);
+    return createPointItemTemplate(this.#point, this.#destinations, this.#offersByType);
   }
 
   get element() {

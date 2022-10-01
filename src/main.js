@@ -1,16 +1,34 @@
-import {render} from './framework/render.js';
-import PointBoardPresenter from './presenter/board-presenter.js';
 import PointsModel from './model/points-model.js';
-import { generateFilter } from './mock/filter.js';
-import FilterView from './view/filter-view.js';
+import FilterModel from './model/filter-model.js';
+import BoardPresenter from './presenter/board-presenter.js';
+import {render} from './framework/render.js';
+import FilterPresenter from './presenter/filter-presenter.js';
+import NewPointButtonView from './view/new-point-button-view.js';
 
-const pointBoardPresenter = new PointBoardPresenter();
-const pointsModel = new PointsModel();
 const siteMainElement = document.querySelector('.trip-events');
 const filterContainer = document.querySelector('.trip-controls__filters');
+const newPointButtonContainer = document.querySelector('.trip-main');
 
-const filters = generateFilter(pointsModel.points);
-render(new FilterView(filters), filterContainer);
+const pointsModel = new PointsModel();
+const filterModel = new FilterModel();
+const boardPresenter = new BoardPresenter(siteMainElement, pointsModel, filterModel);
+const filterPresenter = new FilterPresenter(filterContainer, filterModel, pointsModel);
+
+const newPointButtonComponent = new NewPointButtonView();
+
+const handleNewPointFormClose = () => {
+  newPointButtonComponent.element.disabled = false;
+};
+
+const handleNewPointButtonClick = () => {
+  boardPresenter.createPoint(handleNewPointFormClose);
+  newPointButtonComponent.element.disabled = true;
+};
+
+render(newPointButtonComponent, newPointButtonContainer);
+
+newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
 
 
-pointBoardPresenter.init(siteMainElement, pointsModel);
+filterPresenter.init();
+boardPresenter.init();

@@ -2,6 +2,8 @@ import { render, replace, remove } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
+import {UserAction, UpdateType} from '../const.js';
+import {isDatesEqual, isPriseEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -15,12 +17,14 @@ export default class PointPresenter {
   #changeData = null;
   #changeMode = null;
   #point = null;
+  #pointsModel = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode) {
+  constructor(pointListContainer, changeData, changeMode, pointsModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#pointsModel = pointsModel;
   }
 
   #replaceFormToPoint = () => {
@@ -42,13 +46,22 @@ export default class PointPresenter {
     this.#mode = Mode.EDITING;
   };
 
-  #handleFormSubmit = (point) => {
-    this.#changeData(point);
-    this.#replaceFormToPoint();
+  #handleFormSubmit = (update) => {
+    const isMajorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+    !isPriseEqual(this.#point.basePrice, update.basePrice);
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
+      update);
   };
 
-  #handleFormDelete = () => {
-    this.destroy();
+  #handleFormDelete = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
   };
 
   #handleFormClose = () => {
@@ -61,8 +74,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointItemComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointItemComponent = new PointItemView(point);
-    this.#pointEditComponent = new PointEditView(point);
+    this.#pointItemComponent = new PointItemView(this.#pointsModel, point);
+    this.#pointEditComponent = new PointEditView(this.#pointsModel, point);
 
     this.#pointItemComponent.setEditHandler(this.#replacePointToForm);
     this.#pointEditComponent.setCloseFormHandler(this.#handleFormClose);
