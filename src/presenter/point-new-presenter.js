@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { UpdateType, UserAction } from '../const.js';
 import { remove, render, RenderPosition } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
@@ -8,22 +7,23 @@ import PointEditView from '../view/point-edit-view.js';
 export default class PointNewPresenter {
   #pointListContainer = null;
   #pointEditComponent = null;
-  #changeData = null;
-  #pointsModel = null;
   #destroyCallback = null;
+  #changeData = null;
+  #destinations = null;
+  #offers = null;
 
-  constructor(pointListContainer, changeData, pointsModel) {
+  constructor(pointListContainer, changeData, destinations, offers) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-    this.#pointsModel = pointsModel;
-
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   init = (callback) => {
     this.#destroyCallback = callback;
     if (this.#pointEditComponent !== null) {return;}
 
-    this.#pointEditComponent = new PointEditView(this.#pointsModel);
+    this.#pointEditComponent = new PointEditView(undefined, this.#destinations, this.#offers);
     this.#pointEditComponent.setSubmitFormHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteItemHandler(this.#handleFormCancel);
 
@@ -50,7 +50,7 @@ export default class PointNewPresenter {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      {...point, id: nanoid()},
+      point,
     );
     this.destroy();
   };

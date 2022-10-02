@@ -16,15 +16,19 @@ export default class PointPresenter {
   #pointEditComponent = null;
   #changeData = null;
   #changeMode = null;
-  #point = null;
   #pointsModel = null;
+  #point = null;
+  #destinations = null;
+  #offers = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode, pointsModel) {
+  constructor(pointListContainer, changeData, changeMode, pointsModel, destinations, offers) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
     this.#pointsModel = pointsModel;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
   #replaceFormToPoint = () => {
@@ -74,8 +78,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointItemComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointItemComponent = new PointItemView(this.#pointsModel, point);
-    this.#pointEditComponent = new PointEditView(this.#pointsModel, point);
+    this.#pointItemComponent = new PointItemView(point, this.#destinations, this.#offers);
+    this.#pointEditComponent = new PointEditView(point, this.#destinations, this.#offers);
 
     this.#pointItemComponent.setEditHandler(this.#replacePointToForm);
     this.#pointEditComponent.setCloseFormHandler(this.#handleFormClose);
