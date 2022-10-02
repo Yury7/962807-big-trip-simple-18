@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetuer adipiscing elit',
   'Aenean commodo ligula eget dolor',
@@ -49,18 +47,6 @@ const DESTINATIONS = [
   'Chamonix',
   'Geneva'
 ];
-
-// const BLANK_POINT = {
-//   id: '',
-//   basePrice: '',
-//   dateFrom: dayjs().toISOString(),
-//   dateTo: dayjs().toISOString(),
-//   destination: '',
-//   destinationItem: '',
-//   type: 'bus',
-//   offers: [],
-//   offerItems: [],
-// };
 
 const BLANK_POINT = {
   id: '',

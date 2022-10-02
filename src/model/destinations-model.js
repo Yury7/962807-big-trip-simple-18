@@ -12,7 +12,6 @@ export default class DestinationsModel extends Observable {
   }
 
   get destinations() {
-    // console.log(this.#destinations);
     return this.#destinations;
   }
 

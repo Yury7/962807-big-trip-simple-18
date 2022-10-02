@@ -239,7 +239,6 @@ export default class PointEditView extends AbstractStatefulView {
     const point = {...state};
     delete point.destinationItem;
     delete point.offerItems;
-    console.log(point);
     return point;
   };
 

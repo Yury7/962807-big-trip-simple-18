@@ -47,6 +47,18 @@ export default class PointNewPresenter {
     });
   };
 
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  };
+
   #onEscKeyDown = (evt) => {
     if (!isEscapeKey(evt)) {return;}
     evt.preventDefault();
@@ -59,7 +71,6 @@ export default class PointNewPresenter {
       UpdateType.MAJOR,
       point,
     );
-    // this.destroy();
   };
 
   #handleFormCancel = () => {

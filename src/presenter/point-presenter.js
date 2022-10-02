@@ -100,8 +100,6 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      // replace(this.#pointEditComponent, prevPointEditComponent);
-
       replace(this.#pointItemComponent, prevPointEditComponent);
       this.#mode = Mode.DEFAULT;
     }
@@ -130,6 +128,23 @@ export default class PointPresenter {
         isSaving: true,
       });
     }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointItemComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
   };
 
   setDeleting = () => {
