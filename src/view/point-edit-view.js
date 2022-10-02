@@ -7,13 +7,19 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const createPointEditTemplate = (data, isDisabled) => {
-  const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems} = data;
+const createPointEditTemplate = (data) => {
+  const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems, isDisabled, isSaving, isDeleting} = data;
 
   const checkFormData = () => (dateFrom !== '') &&
   (dateTo !== '') &&
   destinationItem?.name &&
   basePrice > MIN_BASE_PRISE;
+
+  const getResetButtonName = () => {
+    if (!data.id) {return 'Cancel';}
+    if (isDeleting) {return 'Deleting...';}
+    return 'Delete';
+  };
 
   const createPointTypeList = () => {
 
@@ -123,13 +129,13 @@ ${createPictures()}
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${(basePrice)}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${(basePrice)}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit" ${checkFormData() ? '' : 'disabled'}>Save</button>
-      <button class="event__reset-btn" type="reset">${(data.id) ? 'Delete' : 'Cancel'}</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${checkFormData() && !isDisabled ? '' : 'disabled'}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset">${getResetButtonName()}</button>
       ${(data.id) ?
-    `<button class="event__rollup-btn" type="button">
+    `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
       <span class="visually-hidden">Open event</span>
       </button>`
     : ''}

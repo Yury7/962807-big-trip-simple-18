@@ -40,6 +40,13 @@ export default class PointNewPresenter {
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
   #onEscKeyDown = (evt) => {
     if (!isEscapeKey(evt)) {return;}
     evt.preventDefault();
@@ -52,7 +59,7 @@ export default class PointNewPresenter {
       UpdateType.MAJOR,
       point,
     );
-    this.destroy();
+    // this.destroy();
   };
 
   #handleFormCancel = () => {

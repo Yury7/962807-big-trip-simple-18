@@ -56,6 +56,14 @@ const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || day
 const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
 
 
+const isPointEqual = (pointA, pointB) => pointA.id === pointB.id &&
+  pointA.basePrice === pointB.basePrice &&
+  pointA.dateFrom === pointB.dateFrom &&
+  pointA.dateTo === pointB.dateTo &&
+  pointA.destination === pointB.destination &&
+  pointA.type === pointB.type &&
+  pointA.offers.slice().sort().join() === pointB.offers.slice().sort().join();
+
 export {
   getDate,
   getHours,
@@ -70,5 +78,6 @@ export {
   sortByPrice,
   toKebabCase,
   isDatesEqual,
-  isPriseEqual
+  isPriseEqual,
+  isPointEqual,
 };
