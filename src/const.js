@@ -50,11 +50,23 @@ const DESTINATIONS = [
   'Geneva'
 ];
 
+// const BLANK_POINT = {
+//   id: '',
+//   basePrice: '',
+//   dateFrom: dayjs().toISOString(),
+//   dateTo: dayjs().toISOString(),
+//   destination: '',
+//   destinationItem: '',
+//   type: 'bus',
+//   offers: [],
+//   offerItems: [],
+// };
+
 const BLANK_POINT = {
   id: '',
   basePrice: '',
-  dateFrom: dayjs().toISOString(),
-  dateTo: dayjs().toISOString(),
+  dateFrom: '',
+  dateTo: '',
   destination: '',
   destinationItem: '',
   type: 'bus',
@@ -124,6 +136,7 @@ const POINTS_AMOUNT = 5;
 const MINUTES_DELTA = 1440;
 const PICTURES_MAX_AMOUNT = 4;
 const DESCRIPTIONS_MAX_AMOUNT = 5;
+const MIN_BASE_PRISE = 0;
 
 export {
   DESCRIPTIONS_MAX_AMOUNT,
@@ -145,5 +158,6 @@ export {
   UpdateType,
   Method,
   AUTHORIZATION,
-  END_POINT
+  END_POINT,
+  MIN_BASE_PRISE
 };

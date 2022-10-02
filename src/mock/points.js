@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
 import {
   pointPrice, POINT_TYPES, POINTS_AMOUNT, timeBuffer
 } from '../const.js';
@@ -44,7 +43,7 @@ const getRandomOffersIds = (type, offersByType) => {
 const generatePoint = (offersByType) => {
   const type = getRandomArrayItem(POINT_TYPES);
   return {
-    id: nanoid(),
+    id: '',
     basePrice: getRandomInteger(pointPrice.min, pointPrice.max),
     dateFrom: generateDateFrom(),
     dateTo: generateDateTo(),

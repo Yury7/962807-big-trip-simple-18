@@ -1,5 +1,5 @@
 import {
-  DESTINATIONS, POINT_TYPES, BLANK_POINT
+  DESTINATIONS, POINT_TYPES, BLANK_POINT, MIN_BASE_PRISE
 } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {capitalizeWord, toKebabCase, getInputTypeDate} from '../utils/point.js';
@@ -7,14 +7,19 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const createPointEditTemplate = (data) => {
+const createPointEditTemplate = (data, isDisabled) => {
   const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems} = data;
+
+  const checkFormData = () => (dateFrom !== '') &&
+  (dateTo !== '') &&
+  destinationItem?.name &&
+  basePrice > MIN_BASE_PRISE;
 
   const createPointTypeList = () => {
 
     const createPointTypeItem = (typeItem, currentType) => `
   <div class="event__type-item">
-    <input id="event-type-${typeItem}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${capitalizeWord(typeItem)}" ${typeItem === currentType ? 'checked' : ''}>
+    <input id="event-type-${typeItem}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${capitalizeWord(typeItem)}" ${typeItem === currentType ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
     <label class="event__type-label  event__type-label--${typeItem}" for="event-type-${typeItem}-${id}">${capitalizeWord(typeItem)}</label>
   </div>`;
 
@@ -33,7 +38,7 @@ const createPointEditTemplate = (data) => {
   const createOffers = () => {
     if (!offerItems.length) {return '';}
     const createOffer = (offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${toKebabCase(offer.title)}-${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" data-offer-id="${offer.id}" ${offers.includes(offer.id) ? 'checked' : ''}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${toKebabCase(offer.title)}-${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" data-offer-id="${offer.id}" ${offers.includes(offer.id) ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${toKebabCase(offer.title)}-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
@@ -85,10 +90,10 @@ ${createPictures()}
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
         <div class="event__type-list">
-          <fieldset class="event__type-group">
+          <fieldset class="event__type-group" ${isDisabled ? 'disabled' : ''}>
             <legend class="visually-hidden">Event type</legend>
             ${createPointTypeList()}
           </fieldset>
@@ -99,7 +104,7 @@ ${createPictures()}
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type ? he.encode(capitalizeWord(type)) : ''}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem ? destinationItem.name : ''}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem ? destinationItem.name : ''}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
         <datalist id="destination-list-1">
             ${createPointDestinationsList()}
         </datalist>
@@ -107,10 +112,10 @@ ${createPictures()}
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getInputTypeDate(dateFrom)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getInputTypeDate(dateFrom, 'set start time')}" ${isDisabled ? 'disabled' : ''}>
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getInputTypeDate(dateTo)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getInputTypeDate(dateTo, 'set end time')}" ${isDisabled ? 'disabled' : ''}>
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -121,7 +126,7 @@ ${createPictures()}
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${(basePrice)}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${checkFormData() ? '' : 'disabled'}>Save</button>
       <button class="event__reset-btn" type="reset">${(data.id) ? 'Delete' : 'Cancel'}</button>
       ${(data.id) ?
     `<button class="event__rollup-btn" type="button">
@@ -228,6 +233,7 @@ export default class PointEditView extends AbstractStatefulView {
     const point = {...state};
     delete point.destinationItem;
     delete point.offerItems;
+    console.log(point);
     return point;
   };
 
@@ -290,9 +296,10 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #priceInputHandler = (evt) => {
-    this._setState({
+    this.updateElement({
       basePrice: +evt.target.value
     });
+
   };
 
   #offersToggleHandler = () => {
@@ -309,7 +316,7 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromInputHandler);
     this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToInputHandler);
-    this.element.querySelector('#event-price-1').addEventListener('input', this.#priceInputHandler);
+    this.element.querySelector('#event-price-1').addEventListener('change', this.#priceInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersToggleHandler);
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
