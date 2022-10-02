@@ -56,7 +56,7 @@ const createPointEditTemplate = (data) => {
 
     const createPicturesList = () => destinationItem.pictures
       .slice()
-      .map((photo) => `<img class="event__photo" src="../../${photo.src}" alt="${photo.description}">`)
+      .map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`)
       .join(' ');
 
     const createPictures = () => destinationItem.pictures ?
@@ -143,10 +143,11 @@ export default class PointEditView extends AbstractStatefulView {
   #destinations = null;
   #offersByType = null;
 
-  constructor(pointsModel, point = BLANK_POINT) {
+  constructor(point = BLANK_POINT, destinations, offersByType) {
     super();
-    this.#destinations = pointsModel.destinations;
-    this.#offersByType = pointsModel.offersByType;
+    this.#destinations = destinations;
+    this.#offersByType = offersByType;
+
     this._state = this.#parsePointToState(point);
     this.#setInnerHandlers();
   }
@@ -250,11 +251,6 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.firstElementChild.addEventListener('submit', this.#submitEditFormHandler);
   };
 
-  setResetFormHandler = (callback) => {
-    this._callback.resetEditForm = callback;
-    this.element.firstElementChild.addEventListener('reset', this.#resetEditFormHandler);
-  };
-
   setDeleteItemHandler = (callback) => {
     this._callback.deleteItem = callback;
     this.element.firstElementChild.addEventListener('reset', this.#deleteItemHandler);
@@ -268,11 +264,6 @@ export default class PointEditView extends AbstractStatefulView {
   #submitEditFormHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitEditForm(this.#parseStateToPoint(this._state));
-  };
-
-  #resetEditFormHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.resetEditForm();
   };
 
   #deleteItemHandler = (evt) => {
