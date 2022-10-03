@@ -114,7 +114,7 @@ const Method = {
   DELETE: 'DELETE',
 };
 
-const AUTHORIZATION = 'Basic f456tqeghfdkjtsdf';
+const AUTHORIZATION = 'Basic fdg4569045t09e';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const OFFERS_BY_TYPE_MAX_AMOUNT = 5;
@@ -122,7 +122,8 @@ const POINTS_AMOUNT = 5;
 const MINUTES_DELTA = 1440;
 const PICTURES_MAX_AMOUNT = 4;
 const DESCRIPTIONS_MAX_AMOUNT = 5;
-const MIN_BASE_PRISE = 0;
+const MIN_BASE_PRICE = 0;
+const BASE_PRICE_REGULAR = /^[1-9]+[0-9]*$/;
 
 export {
   DESCRIPTIONS_MAX_AMOUNT,
@@ -145,5 +146,6 @@ export {
   Method,
   AUTHORIZATION,
   END_POINT,
-  MIN_BASE_PRISE
+  MIN_BASE_PRICE,
+  BASE_PRICE_REGULAR
 };

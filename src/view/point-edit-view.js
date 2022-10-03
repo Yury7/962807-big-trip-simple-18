@@ -1,12 +1,11 @@
 import {
-  DESTINATIONS, POINT_TYPES, BLANK_POINT, MIN_BASE_PRISE
+  DESTINATIONS, POINT_TYPES, BLANK_POINT, BASE_PRICE_REGULAR
 } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {capitalizeWord, toKebabCase, getInputTypeDate, getISOTypeDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
-import dayjs from 'dayjs';
 
 const createPointEditTemplate = (data) => {
   const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems, isDisabled, isSaving, isDeleting} = data;
@@ -14,7 +13,7 @@ const createPointEditTemplate = (data) => {
   const checkFormData = () => (dateFrom !== '') &&
   (dateTo !== '') &&
   destinationItem?.name &&
-  basePrice > MIN_BASE_PRISE;
+  BASE_PRICE_REGULAR.test(basePrice);
 
   const getResetButtonName = () => {
     if (!data.id) {return 'Cancel';}
@@ -176,10 +175,10 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   removeElement = () => {
-      this.#datepickerFrom?.destroy();
-      this.#datepickerTo?.destroy();
-      this.#datepickerFrom = null;
-      this.#datepickerTo = null;
+    this.#datepickerFrom?.destroy();
+    this.#datepickerTo?.destroy();
+    this.#datepickerFrom = null;
+    this.#datepickerTo = null;
     super.removeElement();
   };
 
@@ -239,7 +238,6 @@ export default class PointEditView extends AbstractStatefulView {
 
   #parseStateToPoint = (state) => {
     const point = {...state};
-    console.log(point);
     delete point.destinationItem;
     delete point.offerItems;
     return point;
@@ -304,8 +302,9 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #priceInputHandler = (evt) => {
+    const basePrice = parseInt(evt.target.value, 10);
     this.updateElement({
-      basePrice: +evt.target.value
+      basePrice: isNaN(basePrice) ? '' : basePrice,
     });
 
   };

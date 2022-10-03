@@ -16,7 +16,9 @@ const toKebabCase = (string) => string
   .replace(/[\s_]+/g, '-')
   .toLowerCase();
 
-const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'D');
+const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'minute');
+const isPointUnvisited = (dateFrom) => dateFrom && dayjs(dateFrom).isAfter(dayjs(),'minute');
+
 
 const getWeightForNullDate = (dateA, dateB) => {
   if (dateA === null && dateB === null) {
@@ -55,7 +57,6 @@ const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || day
 
 const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
 
-
 const isPointEqual = (pointA, pointB) => pointA.id === pointB.id &&
   pointA.basePrice === pointB.basePrice &&
   pointA.dateFrom === pointB.dateFrom &&
@@ -73,6 +74,7 @@ export {
   getDuration,
   capitalizeWord,
   isPointVisited,
+  isPointUnvisited,
   getWeightForNullDate,
   sortByDay,
   sortByPrice,
