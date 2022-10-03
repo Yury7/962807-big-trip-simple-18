@@ -1,9 +1,9 @@
-import { render, replace, remove } from '../framework/render.js';
+import { UpdateType, UserAction } from '../const.js';
+import { remove, render, replace } from '../framework/render.js';
 import { isEscapeKey } from '../utils/common.js';
+import { isDatesEqual, isPointEqual, isPriseEqual } from '../utils/point.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
-import {UserAction, UpdateType} from '../const.js';
-import {isDatesEqual, isPriseEqual, isPointEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',

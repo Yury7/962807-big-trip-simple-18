@@ -28,7 +28,7 @@ export default class PointsModel extends Observable {
 
   updatePoint = async (updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);
-
+    console.log(update);
     if (index === -1) {
       throw new Error('Can\'t update unexisting point');
     }

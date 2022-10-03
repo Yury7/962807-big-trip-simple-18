@@ -2,10 +2,11 @@ import {
   DESTINATIONS, POINT_TYPES, BLANK_POINT, MIN_BASE_PRISE
 } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {capitalizeWord, toKebabCase, getInputTypeDate} from '../utils/point.js';
+import {capitalizeWord, toKebabCase, getInputTypeDate, getISOTypeDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
+import dayjs from 'dayjs';
 
 const createPointEditTemplate = (data) => {
   const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems, isDisabled, isSaving, isDeleting} = data;
@@ -150,7 +151,8 @@ ${createPictures()}
 
 export default class PointEditView extends AbstractStatefulView {
   #element = null;
-  #datepicker = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
   #destinations = null;
   #offersByType = null;
 
@@ -174,40 +176,40 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   removeElement = () => {
+      this.#datepickerFrom?.destroy();
+      this.#datepickerTo?.destroy();
+      this.#datepickerFrom = null;
+      this.#datepickerTo = null;
     super.removeElement();
-
-    if (this.#datepicker) {
-      this.#datepicker.destroy();
-      this.#datepicker = null;
-    }
   };
 
   #dateFromInputHandler = ([userDate]) => {
     this.updateElement({
-      dateFrom: userDate,
+      dateFrom: getISOTypeDate(userDate),
     });
   };
 
   #dateToInputHandler = ([userDate]) => {
     this.updateElement({
-      dateTo: userDate
+      dateTo: getISOTypeDate(userDate),
     });
   };
 
   #setDatepickerFrom = () => {
-    this.#datepicker = flatpickr (
+    this.#datepickerFrom = flatpickr (
       this.element.querySelector('#event-start-time-1'),
       {
         dateFormat: 'd/m/y H:i',
+        maxDate: this._state.dateTo,
         enableTime: true,
         defaultDate: this._state.dateFrom,
-        onChange: this.#dateFromInputHandler
+        onClose: this.#dateFromInputHandler
       }
     );
   };
 
   #setDatepickerTo = () => {
-    this.#datepicker = flatpickr (
+    this.#datepickerTo = flatpickr (
       this.element.querySelector('#event-end-time-1'),
       {
         dateFormat: 'd/m/y H:i',
@@ -237,6 +239,7 @@ export default class PointEditView extends AbstractStatefulView {
 
   #parseStateToPoint = (state) => {
     const point = {...state};
+    console.log(point);
     delete point.destinationItem;
     delete point.offerItems;
     return point;

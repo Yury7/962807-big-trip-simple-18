@@ -9,7 +9,7 @@ const getInputTypeDate = (date, message = 'set date') =>(date instanceof Date) ?
   message;
 const getDateTimeType = (data) => dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
-
+const getISOTypeDate = (date) => dayjs(date).toISOString();
 
 const toKebabCase = (string) => string
   .replace(/([a-z])([A-Z])/g, '$1-$2')
@@ -80,4 +80,5 @@ export {
   isDatesEqual,
   isPriseEqual,
   isPointEqual,
+  getISOTypeDate
 };
