@@ -4,6 +4,7 @@ import { UpdateType } from '../const.js';
 
 export default class OffersModel extends Observable {
   #offers = [];
+  #offersTypes = null;
   #offersApiService = null;
 
   constructor(offersApiService) {
@@ -15,6 +16,10 @@ export default class OffersModel extends Observable {
     return this.#offers;
   }
 
+  get offersTypes() {
+    return this.#offersTypes;
+  }
+
   init = async () => {
     try {
       this.#offers = await this.#offersApiService.offers;
@@ -22,6 +27,14 @@ export default class OffersModel extends Observable {
       this.#offers = [];
     }
 
+    if (this.#offers.length) {this.#getOffersTypes();}
+
     this._notify(UpdateType.INIT, 'offers');
+  };
+
+  #getOffersTypes = () => {
+    const offersTypes = new Set();
+    this.#offers.forEach((offer) => offersTypes.add(offer.type));
+    this.#offersTypes = Array.from(offersTypes);
   };
 }

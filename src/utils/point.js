@@ -9,25 +9,27 @@ const getInputTypeDate = (date, message = 'set date') =>(date instanceof Date) ?
   message;
 const getDateTimeType = (data) => dayjs(data).format('YYYY-MM-DDTHH:mm');
 const getDuration = (from, to) => dayjs(to).diff(from, 'm');
-
+const getISOTypeDate = (date) => dayjs(date).toISOString();
 
 const toKebabCase = (string) => string
   .replace(/([a-z])([A-Z])/g, '$1-$2')
   .replace(/[\s_]+/g, '-')
   .toLowerCase();
 
-const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'D');
+const isPointVisited = (dateFrom) => dateFrom && dayjs(dateFrom).isBefore(dayjs(), 'minute');
+const isPointUnvisited = (dateFrom) => dateFrom && dayjs(dateFrom).isAfter(dayjs(),'minute');
+
 
 const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
+  if (!dateA && !dateB ) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (!dateA) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (!dateB ) {
     return -1;
   }
 
@@ -51,10 +53,9 @@ const sortByPrice = (pointA, pointB) => {
   }
 };
 
-const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+const isDatesEqual = (dateA, dateB) => (!dateA && !dateB ) || dayjs(dateA).isSame(dateB, 'D');
 
 const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
-
 
 const isPointEqual = (pointA, pointB) => pointA.id === pointB.id &&
   pointA.basePrice === pointB.basePrice &&
@@ -73,11 +74,12 @@ export {
   getDuration,
   capitalizeWord,
   isPointVisited,
-  getWeightForNullDate,
+  isPointUnvisited,
   sortByDay,
   sortByPrice,
   toKebabCase,
   isDatesEqual,
   isPriseEqual,
   isPointEqual,
+  getISOTypeDate
 };
