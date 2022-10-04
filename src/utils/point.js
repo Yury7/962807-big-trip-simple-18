@@ -49,6 +49,11 @@ const sortByPrice = (pointA, pointB) => {
   }
 };
 
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+
+const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
+
+
 export {
   getDate,
   getHours,
@@ -61,5 +66,7 @@ export {
   getWeightForNullDate,
   sortByDay,
   sortByPrice,
-  toKebabCase
+  toKebabCase,
+  isDatesEqual,
+  isPriseEqual
 };

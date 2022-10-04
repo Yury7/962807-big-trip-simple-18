@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const DESCRIPTIONS = [
   'Lorem ipsum dolor sit amet, consectetuer adipiscing elit',
   'Aenean commodo ligula eget dolor',
@@ -48,6 +50,18 @@ const DESTINATIONS = [
   'Geneva'
 ];
 
+const BLANK_POINT = {
+  id: '',
+  basePrice: '',
+  dateFrom: dayjs().toISOString(),
+  dateTo: dayjs().toISOString(),
+  destination: '',
+  destinationItem: '',
+  type: 'bus',
+  offers: [],
+  offerItems: [],
+};
+
 const FilterType = {
   EVERYTHING  : 'everything',
   FUTURE : 'future',
@@ -60,6 +74,18 @@ const SortType = {
   TIME: 'time',
   PRISE: 'prise',
   OFFERS: 'offers',
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };
 
 const pointPrice = {
@@ -83,7 +109,7 @@ const timeBuffer = {
 };
 
 const OFFERS_BY_TYPE_MAX_AMOUNT = 5;
-const POINTS_AMOUNT = 10;
+const POINTS_AMOUNT = 5;
 const MINUTES_DELTA = 1440;
 const PICTURES_MAX_AMOUNT = 4;
 const DESCRIPTIONS_MAX_AMOUNT = 5;
@@ -100,7 +126,10 @@ export {
   PICTURES_MAX_AMOUNT,
   POINT_TYPES,
   POINTS_AMOUNT,
+  BLANK_POINT,
   timeBuffer,
   FilterType,
-  SortType
+  SortType,
+  UserAction,
+  UpdateType
 };

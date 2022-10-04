@@ -16,10 +16,11 @@ const generateOffer = (index) => ({
 
 const pointTypes = POINT_TYPES.slice();
 
-const generateOffersByType = () => ({
+const generateOffers = () => ({
   type: popRandomArrayItem(pointTypes) ?? getRandomArrayItem(POINT_TYPES),
   offers: generateData(getRandomInteger(0, OFFERS_BY_TYPE_MAX_AMOUNT), generateOffer)
 });
 
-const offersByType = generateData(POINT_TYPES.length, generateOffersByType);
-export {offersByType};
+
+const generateOffersByType = () => generateData(POINT_TYPES.length, generateOffers);
+export {generateOffersByType};

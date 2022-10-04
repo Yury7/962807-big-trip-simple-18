@@ -2,9 +2,9 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { SortType } from '../const.js';
 import { } from '../utils/point.js';
 
-const createSortTemplate = () => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
+const createSortTemplate = (currentSortType) => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--${SortType.DAY}">
-              <input id="sort-${SortType.DAY}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${SortType.DAY}" checked="">
+              <input id="sort-${SortType.DAY}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${SortType.DAY}" ${currentSortType === SortType.DAY ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-${SortType.DAY}">${SortType.DAY}</label>
             </div>
 
@@ -19,7 +19,7 @@ const createSortTemplate = () => `<form class="trip-events__trip-sort  trip-sort
             </div>
 
             <div class="trip-sort__item  trip-sort__item--${SortType.PRISE}">
-              <input id="sort-${SortType.PRISE}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${SortType.PRISE}">
+              <input id="sort-${SortType.PRISE}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${SortType.PRISE}" ${currentSortType === SortType.PRISE ? 'checked' : ''}>
               <label class="trip-sort__btn" for="sort-${SortType.PRISE}">${SortType.PRISE}</label>
             </div>
 
@@ -31,8 +31,15 @@ const createSortTemplate = () => `<form class="trip-events__trip-sort  trip-sort
 
 export default class SortView extends AbstractView {
 
+  #currentSortType = null;
+
+  constructor(currentSortType) {
+    super();
+    this.#currentSortType = currentSortType;
+  }
+
   get template() {
-    return createSortTemplate();
+    return createSortTemplate(this.#currentSortType);
   }
 
   setSortTypeChangeHandler = (callback) => {

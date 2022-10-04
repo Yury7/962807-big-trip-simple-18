@@ -1,28 +1,13 @@
 import {
-  DESTINATIONS, POINT_TYPES
+  DESTINATIONS, POINT_TYPES, BLANK_POINT
 } from '../const.js';
-import { destinations } from '../mock/destination.js';
-import { offersByType } from '../mock/offer.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {capitalizeWord, toKebabCase, getInputTypeDate} from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-
-const BLANK_POINT = {
-  id: '',
-  basePrice: '',
-  dateFrom: '',
-  dateTo: '',
-  destination: '',
-  destinationItem: '',
-  type: '',
-  offers: [],
-  offerItems: [],
-};
-
+import he from 'he';
 
 const createPointEditTemplate = (data) => {
-
   const {id, basePrice, dateFrom, dateTo, destinationItem, type, offers, offerItems} = data;
 
   const createPointTypeList = () => {
@@ -112,7 +97,7 @@ ${createPictures()}
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-          ${type ? capitalizeWord(type) : ''}
+          ${type ? he.encode(capitalizeWord(type)) : ''}
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationItem ? destinationItem.name : ''}" list="destination-list-1">
         <datalist id="destination-list-1">
@@ -133,7 +118,7 @@ ${createPictures()}
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${(basePrice)}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -153,15 +138,21 @@ ${createPictures()}
 };
 
 export default class PointEditView extends AbstractStatefulView {
+  #element = null;
   #datepicker = null;
-  constructor(point = BLANK_POINT) {
+  #destinations = null;
+  #offersByType = null;
+
+  constructor(pointsModel, point = BLANK_POINT) {
     super();
+    this.#destinations = pointsModel.destinations;
+    this.#offersByType = pointsModel.offersByType;
     this._state = this.#parsePointToState(point);
     this.#setInnerHandlers();
   }
 
   get template() {
-    return createPointEditTemplate(this._state);
+    return createPointEditTemplate(this._state,);
   }
 
   reset = (point) => {
@@ -169,7 +160,6 @@ export default class PointEditView extends AbstractStatefulView {
       this.#parsePointToState(point)
     );
   };
-
 
   removeElement = () => {
     super.removeElement();
@@ -217,16 +207,15 @@ export default class PointEditView extends AbstractStatefulView {
     );
   };
 
-
   #getDestinationItem = (destination) => {
     if (destination === '' ||
     destination === null) {return '';}
-    return destinations.find((item) => item.id === destination);
+    return this.#destinations.find((item) => item.id === destination);
   };
 
   #getOfferItems = (type) => {
     if (!type) {return [];}
-    return offersByType.find((item) => item.type === type)?.offers ?? [];
+    return this.#offersByType.find((item) => item.type === type)?.offers ?? [];
   };
 
   #parsePointToState = (point) => ({...point,
@@ -244,8 +233,9 @@ export default class PointEditView extends AbstractStatefulView {
   _restoreHandlers = () => {
     this.#setInnerHandlers();
     this.setSubmitFormHandler(this._callback.submitEditForm);
-    this.setCloseFormHandler(this._callback.closeEditForm);
     this.setDeleteItemHandler(this._callback.deleteItem);
+    if (!this._state.id) {return;}
+    this.setCloseFormHandler(this._callback.closeEditForm);
   };
 
   setCloseFormHandler = (callback) => {
@@ -257,17 +247,17 @@ export default class PointEditView extends AbstractStatefulView {
 
   setSubmitFormHandler = (callback) => {
     this._callback.submitEditForm = callback;
-    this.element.addEventListener('submit', this.#submitEditFormHandler);
+    this.element.firstElementChild.addEventListener('submit', this.#submitEditFormHandler);
   };
 
   setResetFormHandler = (callback) => {
     this._callback.resetEditForm = callback;
-    this.element.addEventListener('reset', this.#resetEditFormHandler);
+    this.element.firstElementChild.addEventListener('reset', this.#resetEditFormHandler);
   };
 
   setDeleteItemHandler = (callback) => {
     this._callback.deleteItem = callback;
-    this.element.addEventListener('reset', this.#deleteItemHandler);
+    this.element.firstElementChild.addEventListener('reset', this.#deleteItemHandler);
   };
 
   #closeEditFormHandler = (evt) => {
@@ -287,7 +277,7 @@ export default class PointEditView extends AbstractStatefulView {
 
   #deleteItemHandler = (evt) => {
     evt.preventDefault();
-    this._callback.deleteItem();
+    this._callback.deleteItem(this._state);
   };
 
   #typeToggleHandler = (evt) => {
@@ -301,8 +291,7 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #destinationInputHandler = (evt) => {
-    const currentDestination = destinations.find((destination) => destination.name === evt.target.value);
-
+    const currentDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
     this.updateElement({
       destination: (currentDestination) ? currentDestination.id : '',
       destinationItem: (currentDestination) ? this.#getDestinationItem(currentDestination.id) : ''
@@ -311,7 +300,7 @@ export default class PointEditView extends AbstractStatefulView {
 
   #priceInputHandler = (evt) => {
     this._setState({
-      basePrice: evt.target.value
+      basePrice: +evt.target.value
     });
   };
 
@@ -334,6 +323,4 @@ export default class PointEditView extends AbstractStatefulView {
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   };
-
-
 }
