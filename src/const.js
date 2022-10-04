@@ -86,6 +86,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 const pointPrice = {
@@ -107,6 +108,16 @@ const timeBuffer = {
   minDuration: 60,
   maxDuration: 320
 };
+
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+const AUTHORIZATION = 'Basic f456tqeghfdkjtsdf';
+const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const OFFERS_BY_TYPE_MAX_AMOUNT = 5;
 const POINTS_AMOUNT = 5;
@@ -131,5 +142,8 @@ export {
   FilterType,
   SortType,
   UserAction,
-  UpdateType
+  UpdateType,
+  Method,
+  AUTHORIZATION,
+  END_POINT
 };

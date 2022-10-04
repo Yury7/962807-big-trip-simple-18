@@ -16,15 +16,15 @@ const createPointItemTemplate = (point, destinations, offersByType) => {
   const getCheckedOffers = () => {
     if (offers.length === 0) {return '';}
     const offersByCurrentType = offersByType.find((item) => type === item.type).offers;
-    return offers.slice().map((item) => offersByCurrentType[item]);
+    return offers.slice().map((item) => offersByCurrentType[item - 1]);
   };
 
-  const createOffer = (offer) => `<li class="event__offer">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-    </li>`;
-
+  const createOffer = (offer) =>
+    `<li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${offer.price}</span>
+      </li>`;
   const createOfferList = (checkedOffers = getCheckedOffers()) => (checkedOffers) ?
     checkedOffers.slice().map((offer) => createOffer(offer)).join(' ') :
     `<li class="event__offer">
@@ -73,11 +73,11 @@ export default class PointItemView extends AbstractView {
   #element = null;
 
 
-  constructor(pointsModel, point) {
+  constructor(point, destinations, offersByType) {
     super();
     this.#point = point;
-    this.#destinations = pointsModel.destinations;
-    this.#offersByType = pointsModel.offersByType;
+    this.#destinations = destinations;
+    this.#offersByType = offersByType;
   }
 
   get template() {
