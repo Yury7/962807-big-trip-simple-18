@@ -16,77 +16,20 @@ export default class PointPresenter {
   #pointEditComponent = null;
   #changeData = null;
   #changeMode = null;
-  #pointsModel = null;
   #destinationsModel = null;
   #destinations = null;
   #point = null;
   #offersModel = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode, pointsModel, destinationsModel, offersModel) {
+  constructor(pointListContainer, changeData, changeMode, destinationsModel, offersModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
-    this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#destinations = destinationsModel.destinations;
     this.#offersModel = offersModel;
   }
-
-  #replaceFormToPoint = () => {
-    replace(this.#pointItemComponent, this.#pointEditComponent);
-    this.#mode = Mode.DEFAULT;
-  };
-
-  #onEscKeyDown = (evt) => {
-    if (!isEscapeKey(evt)) {
-      return;
-    }
-    this.#pointEditComponent.reset(this.#point);
-    this.#replaceFormToPoint();
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-  };
-
-  #replacePointToForm = () => {
-    replace(this.#pointEditComponent, this.#pointItemComponent);
-    document.addEventListener('keydown', this.#onEscKeyDown);
-    this.#changeMode();
-    this.#mode = Mode.EDITING;
-  };
-
-  #handlePointFavorite = (update) => {
-    this.#changeData(
-      UserAction.UPDATE_POINT,
-      UpdateType.PATCH,
-      update);
-  };
-
-  #handleFormSubmit = (update) => {
-    if (isPointEqual(update, this.#point)) {
-      return this.#replaceFormToPoint();
-    }
-
-    const isMajorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
-    !isPriseEqual(this.#point.basePrice, update.basePrice);
-
-    this.#changeData(
-      UserAction.UPDATE_POINT,
-      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
-      update);
-  };
-
-  #handleFormDelete = (point) => {
-    this.#changeData(
-      UserAction.DELETE_POINT,
-      UpdateType.MAJOR,
-      point,
-    );
-  };
-
-  #handleFormClose = () => {
-    this.#pointEditComponent.reset(this.#point);
-    this.#replaceFormToPoint();
-  };
 
   init = (point) => {
     this.#point = point;
@@ -166,5 +109,60 @@ export default class PointPresenter {
         isDeleting: true,
       });
     }
+  };
+
+  #replaceFormToPoint = () => {
+    replace(this.#pointItemComponent, this.#pointEditComponent);
+    this.#mode = Mode.DEFAULT;
+  };
+
+  #onEscKeyDown = (evt) => {
+    if (!isEscapeKey(evt)) {
+      return;
+    }
+    this.#pointEditComponent.reset(this.#point);
+    this.#replaceFormToPoint();
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+  };
+
+  #replacePointToForm = () => {
+    replace(this.#pointEditComponent, this.#pointItemComponent);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
+  };
+
+  #handlePointFavorite = (update) => {
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      update);
+  };
+
+  #handleFormSubmit = (update) => {
+    if (isPointEqual(update, this.#point)) {
+      return this.#replaceFormToPoint();
+    }
+
+    const isMajorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+    !isPriseEqual(this.#point.basePrice, update.basePrice);
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
+      update);
+  };
+
+  #handleFormDelete = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
+  };
+
+  #handleFormClose = () => {
+    this.#pointEditComponent.reset(this.#point);
+    this.#replaceFormToPoint();
   };
 }

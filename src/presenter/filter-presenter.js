@@ -22,7 +22,6 @@ export default class FilterPresenter {
     this.#pointsModel.addObserver(this.#handlePointsModelEvent);
   }
 
-
   get filters() {
     return Object.values(FilterType);
   }

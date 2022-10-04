@@ -31,9 +31,6 @@ export default class BoardPresenter {
     destinations: true,
   };
 
-  #isLoading = () =>
-    Object.values(this.#loadingStatus).includes(true);
-
   constructor(pointsContainer, filterModel, pointsModel, destinationsModel, offersModel) {
     this.#pointsContainer = pointsContainer;
     this.#filterModel = filterModel;
@@ -71,6 +68,8 @@ export default class BoardPresenter {
     this.#pointNewPresenter.init(callback);
   };
 
+  #isLoading = () => Object.values(this.#loadingStatus).includes(true);
+
   #renderSorting = () => {
     this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
@@ -85,7 +84,7 @@ export default class BoardPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel, this.#destinationsModel, this.#offersModel);
+    const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#handleModeChange, this.#destinationsModel, this.#offersModel);
 
     pointPresenter.init(point);
     this.#pointPresenterStorage.set(point.id, pointPresenter);
@@ -129,7 +128,6 @@ export default class BoardPresenter {
     this.#renderPointList();
     this.#renderPoints(this.points);
   };
-
 
   #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
