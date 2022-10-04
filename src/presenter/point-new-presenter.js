@@ -9,21 +9,23 @@ export default class PointNewPresenter {
   #pointEditComponent = null;
   #destroyCallback = null;
   #changeData = null;
-  #destinations = null;
-  #offers = null;
+  #destinationsModel = null;
+  #offersModel = null;
 
-  constructor(pointListContainer, changeData, destinations, offers) {
+  constructor(pointListContainer, changeData, destinationsModel, offersModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
-    this.#destinations = destinations;
-    this.#offers = offers;
+    this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
   }
 
   init = (callback) => {
     this.#destroyCallback = callback;
-    if (this.#pointEditComponent !== null) {return;}
+    if (this.#pointEditComponent) {
+      return;
+    }
 
-    this.#pointEditComponent = new PointEditView(undefined, this.#destinations, this.#offers);
+    this.#pointEditComponent = new PointEditView(undefined, this.#destinationsModel, this.#offersModel);
     this.#pointEditComponent.setSubmitFormHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteItemHandler(this.#handleFormCancel);
 
@@ -33,7 +35,9 @@ export default class PointNewPresenter {
   };
 
   destroy = () => {
-    if (this.#pointEditComponent === null) {return;}
+    if (!this.#pointEditComponent) {
+      return;
+    }
     this.#destroyCallback?.();
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
@@ -60,7 +64,9 @@ export default class PointNewPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    if (!isEscapeKey(evt)) {return;}
+    if (!isEscapeKey(evt)) {
+      return;
+    }
     evt.preventDefault();
     this.destroy();
   };

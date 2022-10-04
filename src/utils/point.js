@@ -21,15 +21,15 @@ const isPointUnvisited = (dateFrom) => dateFrom && dayjs(dateFrom).isAfter(dayjs
 
 
 const getWeightForNullDate = (dateA, dateB) => {
-  if (dateA === null && dateB === null) {
+  if (!dateA && !dateB ) {
     return 0;
   }
 
-  if (dateA === null) {
+  if (!dateA) {
     return 1;
   }
 
-  if (dateB === null) {
+  if (!dateB ) {
     return -1;
   }
 
@@ -53,7 +53,7 @@ const sortByPrice = (pointA, pointB) => {
   }
 };
 
-const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+const isDatesEqual = (dateA, dateB) => (!dateA && !dateB ) || dayjs(dateA).isSame(dateB, 'D');
 
 const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
 
@@ -75,7 +75,6 @@ export {
   capitalizeWord,
   isPointVisited,
   isPointUnvisited,
-  getWeightForNullDate,
   sortByDay,
   sortByPrice,
   toKebabCase,

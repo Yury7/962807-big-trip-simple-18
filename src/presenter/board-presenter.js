@@ -85,7 +85,7 @@ export default class BoardPresenter {
   };
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel, this.#destinations, this.#offers);
+    const pointPresenter = new PointPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#handleModeChange, this.#pointsModel, this.#destinationsModel, this.#offersModel);
 
     pointPresenter.init(point);
     this.#pointPresenterStorage.set(point.id, pointPresenter);
@@ -113,14 +113,18 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
-    if (this.#isLoading()) {return this.#renderLoading();}
+    if (this.#isLoading()) {
+      return this.#renderLoading();
+    }
 
     this.#destinations = this.#destinationsModel.destinations;
     this.#offers = this.#offersModel.offers;
 
-    this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#destinations, this.#offers);
+    this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#destinationsModel, this.#offersModel);
 
-    if (!this.points.length) {return this.#renderEmptyList();}
+    if (!this.points.length) {
+      return this.#renderEmptyList();
+    }
     this.#renderSorting();
     this.#renderPointList();
     this.#renderPoints(this.points);
@@ -163,12 +167,14 @@ export default class BoardPresenter {
         this.#pointPresenterStorage.get(data.id).init(data);
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard();
+        this.#clearBoard(true);
         this.#renderBoard();
         break;
       case UpdateType.INIT:
         this.#loadingStatus[data] = false;
-        if (this.#isLoading()) {return;}
+        if (this.#isLoading()) {
+          return;
+        }
         remove(this.#loadingComponent);
         this.#renderBoard();
         break;

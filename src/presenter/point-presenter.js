@@ -17,18 +17,20 @@ export default class PointPresenter {
   #changeData = null;
   #changeMode = null;
   #pointsModel = null;
-  #point = null;
+  #destinationsModel = null;
   #destinations = null;
-  #offers = null;
+  #point = null;
+  #offersModel = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode, pointsModel, destinations, offers) {
+  constructor(pointListContainer, changeData, changeMode, pointsModel, destinationsModel, offersModel) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
     this.#pointsModel = pointsModel;
-    this.#destinations = destinations;
-    this.#offers = offers;
+    this.#destinationsModel = destinationsModel;
+    this.#destinations = destinationsModel.destinations;
+    this.#offersModel = offersModel;
   }
 
   #replaceFormToPoint = () => {
@@ -37,7 +39,9 @@ export default class PointPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    if (!isEscapeKey(evt)) {return;}
+    if (!isEscapeKey(evt)) {
+      return;
+    }
     this.#pointEditComponent.reset(this.#point);
     this.#replaceFormToPoint();
     document.removeEventListener('keydown', this.#onEscKeyDown);
@@ -48,6 +52,13 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
     this.#changeMode();
     this.#mode = Mode.EDITING;
+  };
+
+  #handlePointFavorite = (update) => {
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      update);
   };
 
   #handleFormSubmit = (update) => {
@@ -82,15 +93,16 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointItemComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointItemComponent = new PointItemView(point, this.#destinations, this.#offers);
-    this.#pointEditComponent = new PointEditView(point, this.#destinations, this.#offers);
+    this.#pointItemComponent = new PointItemView(point, this.#destinations, this.#offersModel.offers);
+    this.#pointEditComponent = new PointEditView(point, this.#destinationsModel, this.#offersModel);
 
     this.#pointItemComponent.setEditHandler(this.#replacePointToForm);
+    this.#pointItemComponent.setFavoriteClickHandler(this.#handlePointFavorite);
     this.#pointEditComponent.setCloseFormHandler(this.#handleFormClose);
     this.#pointEditComponent.setSubmitFormHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setDeleteItemHandler(this.#handleFormDelete);
 
-    if (prevPointComponent === null || prevPointEditComponent === null) {
+    if (!prevPointComponent || !prevPointEditComponent) {
       render(this.#pointItemComponent, this.#pointListContainer);
       return;
     }

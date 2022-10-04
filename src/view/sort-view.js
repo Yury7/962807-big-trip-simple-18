@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { SortType } from '../const.js';
-import { } from '../utils/point.js';
 
 const createSortTemplate = (currentSortType) => `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--${SortType.DAY}">
@@ -52,7 +51,9 @@ export default class SortView extends AbstractView {
     (evt.target.textContent === SortType.DAY ||
     evt.target.textContent === SortType.PRISE));
 
-    if (!isEnableTarget) {return;}
+    if (!isEnableTarget) {
+      return;
+    }
 
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.textContent);
