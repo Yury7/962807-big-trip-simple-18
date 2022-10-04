@@ -3,7 +3,7 @@ import { isEscapeKey } from '../utils/common.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointItemView from '../view/point-item-view.js';
 import {UserAction, UpdateType} from '../const.js';
-import {isDatesEqual, isPriseEqual} from '../utils/point.js';
+import {isDatesEqual, isPriseEqual, isPointEqual} from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -51,6 +51,10 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (update) => {
+    if (isPointEqual(update, this.#point)) {
+      return this.#replaceFormToPoint();
+    }
+
     const isMajorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
     !isPriseEqual(this.#point.basePrice, update.basePrice);
 
@@ -96,7 +100,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#pointEditComponent, prevPointEditComponent);
+      replace(this.#pointItemComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -113,6 +118,41 @@ export default class PointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
+    }
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointItemComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
     }
   };
 }
