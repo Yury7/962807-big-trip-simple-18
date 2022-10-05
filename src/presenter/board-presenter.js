@@ -12,12 +12,10 @@ import {filter} from '../utils/filter.js';
 
 export default class BoardPresenter {
   #currentSortType = SortType.DAY;
-  #destinations = null;
   #destinationsModel = null;
   #emptyListView = null;
   #filterModel = null;
   #loadingComponent = new LoadingView();
-  #offers = null;
   #offersModel = null;
   #pointListComponent = new PointListView();
   #pointNewPresenter = null;
@@ -128,9 +126,6 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
-
-    this.#destinations = this.#destinationsModel.destinations;
-    this.#offers = this.#offersModel.offers;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent.element, this.#handleViewAction, this.#destinationsModel, this.#offersModel);
 
