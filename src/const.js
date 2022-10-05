@@ -1,8 +1,8 @@
 const BLANK_POINT = {
   id: '',
   basePrice: '',
-  dateFrom: '',
-  dateTo: '',
+  dateFrom: new Date(),
+  dateTo: new Date(),
   destination: '',
   destinationItem: '',
   type: 'bus',
