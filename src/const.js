@@ -43,19 +43,19 @@ const Method = {
   DELETE: 'DELETE',
 };
 
-const AUTHORIZATION = 'Basic fdg4569045t09e';
+const AUTHORIZATION = 'Basic fdg4569s045t09e';
 const END_POINT = 'https://18.ecmascript.pages.academy/big-trip';
 
 const BASE_PRICE_REGULAR = /^[1-9]+[0-9]*$/;
 
 export {
-  BLANK_POINT,
-  FilterType,
-  SortType,
-  UserAction,
-  UpdateType,
-  Method,
   AUTHORIZATION,
+  BASE_PRICE_REGULAR,
+  BLANK_POINT,
   END_POINT,
-  BASE_PRICE_REGULAR
+  FilterType,
+  Method,
+  SortType,
+  UpdateType,
+  UserAction,
 };

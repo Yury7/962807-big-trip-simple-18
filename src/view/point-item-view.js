@@ -69,17 +69,17 @@ const createPointItemTemplate = (point, destinations, offersByType) => {
 };
 
 export default class PointItemView extends AbstractView {
-  #point = null;
   #destinations = null;
-  #offersByType = null;
   #element = null;
+  #offersByType = null;
+  #point = null;
 
 
   constructor(point, destinations, offersByType) {
     super();
-    this.#point = point;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
+    this.#point = point;
   }
 
   get template() {

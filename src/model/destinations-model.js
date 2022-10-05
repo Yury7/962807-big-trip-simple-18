@@ -4,8 +4,8 @@ import { UpdateType } from '../const.js';
 
 export default class DestinationsModel extends Observable {
   #destinations = [];
-  #destinationsNames = null;
   #destinationsApiService = null;
+  #destinationsNames = null;
 
   constructor(destinationsApiService) {
     super();

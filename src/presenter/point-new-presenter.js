@@ -5,18 +5,18 @@ import PointEditView from '../view/point-edit-view.js';
 
 
 export default class PointNewPresenter {
-  #pointListContainer = null;
-  #pointEditComponent = null;
-  #destroyCallback = null;
   #changeData = null;
   #destinationsModel = null;
+  #destroyCallback = null;
   #offersModel = null;
+  #pointEditComponent = null;
+  #pointListContainer = null;
 
   constructor(pointListContainer, changeData, destinationsModel, offersModel) {
-    this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#pointListContainer = pointListContainer;
   }
 
   init = (callback) => {

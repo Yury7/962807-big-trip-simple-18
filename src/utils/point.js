@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { BASE_PRICE_REGULAR } from '../const';
 
 const capitalizeWord = (word) => word[0].toUpperCase() + word.slice(1);
 const getHours = (date) => dayjs(date).format('HH:mm');
@@ -57,6 +58,8 @@ const isDatesEqual = (dateA, dateB) => (!dateA && !dateB ) || dayjs(dateA).isSam
 
 const isPriseEqual = (priceA, priceB) => (Number(priceA).toFixed() === Number(priceB).toFixed());
 
+const isPriseValid = (price) => !isNaN(price) && BASE_PRICE_REGULAR.test(price);
+
 const isPointEqual = (pointA, pointB) => pointA.id === pointB.id &&
   pointA.basePrice === pointB.basePrice &&
   pointA.dateFrom === pointB.dateFrom &&
@@ -66,20 +69,21 @@ const isPointEqual = (pointA, pointB) => pointA.id === pointB.id &&
   pointA.offers.slice().sort().join() === pointB.offers.slice().sort().join();
 
 export {
+  capitalizeWord,
   getDate,
-  getHours,
-  getHumanizedDate,
-  getInputTypeDate,
   getDateTimeType,
   getDuration,
-  capitalizeWord,
-  isPointVisited,
+  getHours,
+  getHumanizedDate,
+  getISOTypeDate,
+  getInputTypeDate,
+  isDatesEqual,
+  isPointEqual,
   isPointUnvisited,
+  isPointVisited,
+  isPriseEqual,
+  isPriseValid,
   sortByDay,
   sortByPrice,
   toKebabCase,
-  isDatesEqual,
-  isPriseEqual,
-  isPointEqual,
-  getISOTypeDate
 };

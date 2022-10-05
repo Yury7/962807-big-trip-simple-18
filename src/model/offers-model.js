@@ -4,8 +4,8 @@ import { UpdateType } from '../const.js';
 
 export default class OffersModel extends Observable {
   #offers = [];
-  #offersTypes = null;
   #offersApiService = null;
+  #offersTypes = null;
 
   constructor(offersApiService) {
     super();
@@ -27,7 +27,9 @@ export default class OffersModel extends Observable {
       this.#offers = [];
     }
 
-    if (this.#offers.length) {this.#getOffersTypes();}
+    if (this.#offers.length) {
+      this.#getOffersTypes();
+    }
 
     this._notify(UpdateType.INIT, 'offers');
   };

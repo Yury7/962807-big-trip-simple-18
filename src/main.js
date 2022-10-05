@@ -42,6 +42,9 @@ destinationsModel.init();
 offersModel.init();
 pointsModel.init()
   .finally(() => {
+    if (pointsModel.isError()) {
+      newPointButtonComponent.element.disabled = true;
+    }
     render(newPointButtonComponent, newPointButtonContainer);
     newPointButtonComponent.setClickHandler(handleNewPointButtonClick);
   });

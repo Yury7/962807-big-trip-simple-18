@@ -1,6 +1,6 @@
-import { BLANK_POINT, BASE_PRICE_REGULAR } from '../const.js';
+import { BLANK_POINT } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {capitalizeWord, toKebabCase, getInputTypeDate, getISOTypeDate} from '../utils/point.js';
+import {capitalizeWord, toKebabCase, getInputTypeDate, getISOTypeDate, isPriseValid } from '../utils/point.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -11,7 +11,7 @@ const createPointEditTemplate = (data) => {
   const checkFormData = () => (dateFrom !== '') &&
   (dateTo !== '') &&
   destinationItem?.name &&
-  BASE_PRICE_REGULAR.test(basePrice);
+  basePrice;
 
   const getResetButtonName = () => {
     if (!data.id) {
@@ -155,11 +155,11 @@ ${createPictures()}
 };
 
 export default class PointEditView extends AbstractStatefulView {
-  #element = null;
   #datepickerFrom = null;
   #datepickerTo = null;
-  #destinationsNames = null;
   #destinations = null;
+  #destinationsNames = null;
+  #element = null;
   #offersByType = null;
   #offersTypes = null;
 
@@ -333,7 +333,7 @@ export default class PointEditView extends AbstractStatefulView {
   #priceInputHandler = (evt) => {
     const basePrice = parseInt(evt.target.value, 10);
     this.updateElement({
-      basePrice: isNaN(basePrice) ? '' : basePrice,
+      basePrice: isPriseValid(basePrice) ? basePrice : '',
     });
 
   };

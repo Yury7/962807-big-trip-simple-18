@@ -4,10 +4,10 @@ import {FilterType, UpdateType} from '../const.js';
 import { isPointVisited, isPointUnvisited } from '../utils/point.js';
 
 export default class FilterPresenter {
+  #filterComponent = null;
   #filterContainer = null;
   #filterModel = null;
   #pointsModel = null;
-  #filterComponent = null;
   #filterStatus = {
     [FilterType.EVERYTHING]: true,
     [FilterType.FUTURE]: false,
@@ -18,6 +18,7 @@ export default class FilterPresenter {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
     this.#pointsModel = pointsModel;
+
     this.#filterModel.addObserver(this.#handleFilterModelEvent);
     this.#pointsModel.addObserver(this.#handlePointsModelEvent);
   }

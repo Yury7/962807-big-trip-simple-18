@@ -17,15 +17,15 @@ const createFilterTemplate = (filters, currentFilter, filterStatus) => {
 };
 
 export default class FilterView extends AbstractView {
-  #filters = null;
   #currentFilter = null;
   #filterStatus = null;
+  #filters = null;
 
   constructor(filters, currentFilter, filterStatus) {
     super();
-    this.#filters = filters;
     this.#currentFilter = currentFilter;
     this.#filterStatus = filterStatus;
+    this.#filters = filters;
   }
 
   get template() {

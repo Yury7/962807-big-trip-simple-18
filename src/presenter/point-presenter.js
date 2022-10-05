@@ -11,24 +11,24 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #pointListContainer = null;
-  #pointItemComponent = null;
-  #pointEditComponent = null;
   #changeData = null;
   #changeMode = null;
-  #destinationsModel = null;
   #destinations = null;
-  #point = null;
-  #offersModel = null;
+  #destinationsModel = null;
   #mode = Mode.DEFAULT;
+  #offersModel = null;
+  #point = null;
+  #pointEditComponent = null;
+  #pointItemComponent = null;
+  #pointListContainer = null;
 
   constructor(pointListContainer, changeData, changeMode, destinationsModel, offersModel) {
-    this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
-    this.#destinationsModel = destinationsModel;
     this.#destinations = destinationsModel.destinations;
+    this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
+    this.#pointListContainer = pointListContainer;
   }
 
   init = (point) => {
@@ -93,9 +93,9 @@ export default class PointPresenter {
 
     const resetFormState = () => {
       this.#pointEditComponent.updateElement({
+        isDeleting: false,
         isDisabled: false,
         isSaving: false,
-        isDeleting: false,
       });
     };
 
@@ -144,19 +144,19 @@ export default class PointPresenter {
       return this.#replaceFormToPoint();
     }
 
-    const isMajorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
+    const isMinorUpdate = !isDatesEqual(this.#point.dateFrom, update.dateFrom) ||
     !isPriseEqual(this.#point.basePrice, update.basePrice);
 
     this.#changeData(
       UserAction.UPDATE_POINT,
-      isMajorUpdate ? UpdateType.MAJOR : UpdateType.PATCH,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update);
   };
 
   #handleFormDelete = (point) => {
     this.#changeData(
       UserAction.DELETE_POINT,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       point,
     );
   };
