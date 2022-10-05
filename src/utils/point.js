@@ -7,7 +7,6 @@ const getHumanizedDate = (date) => dayjs(date).format('MMM D');
 const getDate = (date) => dayjs(date).format('YYYY-MM-DD');
 const getInputTypeDate = (date) => dayjs(date).format('DD/MM/YY HH:MM');
 const getDateTimeType = (data) => dayjs(data).format('YYYY-MM-DDTHH:mm');
-const getDuration = (from, to) => dayjs(to).diff(from, 'm');
 const getISOTypeDate = (date) => dayjs(date).toISOString();
 
 const toKebabCase = (string) => string
@@ -70,7 +69,6 @@ export {
   capitalizeWord,
   getDate,
   getDateTimeType,
-  getDuration,
   getHours,
   getHumanizedDate,
   getISOTypeDate,

@@ -1,8 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { createElement } from '../framework/render.js';
 import {
-  getDate, getDateTimeType,
-  getDuration, getHours,
+  getDate, getDateTimeType, getHours,
   getHumanizedDate,
 } from '../utils/point.js';
 import he from 'he';
@@ -46,7 +45,6 @@ const createPointItemTemplate = (point, destinations, offersByType) => {
                     —
                     <time class="event__end-time" datetime="${getDateTimeType(dateTo)}">${getHours(dateTo)}</time>
                   </p>
-                  <p class="event__duration">${getDuration(dateFrom, dateTo)}M</p>
                 </div>
                 <p class="event__price">
                   €&nbsp;<span class="event__price-value">${basePrice}</span>

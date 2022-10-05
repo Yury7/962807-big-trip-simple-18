@@ -124,10 +124,10 @@ ${createPictures()}
 
       <div class="event__field-group  event__field-group--time">
         <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getInputTypeDate(dateFrom)}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getInputTypeDate(dateFrom)}" ${isDisabled ? 'disabled' : ''} placeholder="Select Date..">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getInputTypeDate(dateTo)}" ${isDisabled ? 'disabled' : ''}>
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getInputTypeDate(dateTo)}" ${isDisabled ? 'disabled' : ''} placeholder="Select Date..">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -277,8 +277,8 @@ export default class PointEditView extends AbstractStatefulView {
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-group').addEventListener('change', this.#typeToggleHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
-    this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromInputHandler);
-    this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToInputHandler);
+    this.element.querySelector('#event-start-time-1').addEventListener('input', this.#dateFromInputHandler());
+    this.element.querySelector('#event-end-time-1').addEventListener('input', this.#dateToInputHandler());
     this.element.querySelector('#event-price-1').addEventListener('change', this.#priceInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersToggleHandler);
     this.#setDatepickerFrom();
@@ -300,16 +300,22 @@ export default class PointEditView extends AbstractStatefulView {
     this._callback.deleteItem(this._state);
   };
 
-  #dateFromInputHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: getISOTypeDate(userDate),
-    });
+  #dateFromInputHandler = (userDate) => {
+    if (userDate) {
+      const [dateFrom] = userDate;
+      this.updateElement({
+        dateFrom: getISOTypeDate(dateFrom),
+      });
+    }
   };
 
-  #dateToInputHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: getISOTypeDate(userDate),
-    });
+  #dateToInputHandler = (userDate) => {
+    if (userDate) {
+      const [dateTo] = userDate;
+      this.updateElement({
+        dateTo: getISOTypeDate(dateTo),
+      });
+    }
   };
 
   #typeToggleHandler = (evt) => {
@@ -318,7 +324,6 @@ export default class PointEditView extends AbstractStatefulView {
       type: currentType,
       offers: [],
       offerItems: this.#getOfferItems(currentType)
-
     });
   };
 
